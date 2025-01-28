@@ -6,9 +6,79 @@
 
 ---
 
-## **Descripción del Repositorio**  
+## **Repositorio grupal - Ingeniería de Software 1 - 2024-2 Grupo 12**  
 Este repositorio contiene la información, tareas, documentación y desarrollo del curso **Ingeniería de Software 1**. Está estructurado para facilitar la organización, colaboración y seguimiento de los contenidos y entregables a lo largo del semestre.  
 
+---
+
+## **Integrantes**
+* Daniel Alejandro Duitama Correa
+*  Edwin Felipe Pinilla Peralta
+*  Miguel Angel Martinez Fernandez
+*  Juan Sebastian Umaña Camacho
+
+
+---
+
+## **Proyecto: Sistema de mensajeria UNión**
+Una plataforma de mensajería en tiempo real diseñada para facilitar la comunicación segura entre estudiantes y profesores, limitada al contexto de los cursos que imparten los profesores o a los que están inscritos los estudiantes.
+
+![logo](logo.jpg)
+
+---
+
+## **Tecnologías utilizadas**
+* **Backend:** Java, Spring Boot, WebSockets
+* **Frontend:** React, Redux, WebSockets
+* **Base de Datos:** MySQL
+* **Autenticación:** OAuth2 (Google)
+* **Despliegue:** AWS
+
+---
+## **gitignore**
+
+### Java ###
+# Compiled class file
+*.class
+
+# Log file
+*.log
+
+# BlueJ files
+*.ctxt
+
+# Mobile Tools for Java (J2ME)
+.mtj.tmp/
+
+# Package Files #
+*.jar
+*.war
+*.nar
+*.ear
+*.zip
+*.tar.gz
+*.rar
+
+# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
+hs_err_pid*
+replay_pid*
+
+### react ###
+.DS_*
+logs
+**/*.backup.*
+**/*.back.*
+
+node_modules
+bower_components
+
+*.sublime*
+
+psd
+thumb
+sketch
+
+# End of https://www.toptal.com/developers/gitignore/api/java,react
 ---
 
 ## **Estructura del Repositorio**  
