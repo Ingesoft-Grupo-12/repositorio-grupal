@@ -36,7 +36,7 @@ Una plataforma de mensajería en tiempo real diseñada para facilitar la comunic
 
 ---
 ## **gitignore**
-
+```plaintext
 ### Java ###
 # Compiled class file
 *.class
@@ -80,7 +80,7 @@ sketch
 
 # End of https://www.toptal.com/developers/gitignore/api/java,react
 ---
-
+```
 ## **Estructura del Repositorio**  
 La estructura inicial del repositorio es la siguiente (puede evolucionar con el tiempo según las necesidades del curso):  
 
