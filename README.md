@@ -35,52 +35,7 @@ Una plataforma de mensajería en tiempo real diseñada para facilitar la comunic
 * **Despliegue:** AWS
 
 ---
-## **gitignore**
-```plaintext
-### Java ###
-# Compiled class file
-*.class
 
-# Log file
-*.log
-
-# BlueJ files
-*.ctxt
-
-# Mobile Tools for Java (J2ME)
-.mtj.tmp/
-
-# Package Files #
-*.jar
-*.war
-*.nar
-*.ear
-*.zip
-*.tar.gz
-*.rar
-
-# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
-hs_err_pid*
-replay_pid*
-
-### react ###
-.DS_*
-logs
-**/*.backup.*
-**/*.back.*
-
-node_modules
-bower_components
-
-*.sublime*
-
-psd
-thumb
-sketch
-
-# End of https://www.toptal.com/developers/gitignore/api/java,react
----
-```
 ## **Estructura del Repositorio**  
 La estructura inicial del repositorio es la siguiente (puede evolucionar con el tiempo según las necesidades del curso):  
 
