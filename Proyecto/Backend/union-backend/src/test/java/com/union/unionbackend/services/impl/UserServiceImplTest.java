@@ -1,4 +1,4 @@
-package com.union.union_backend.services.Impl;
+package com.union.unionbackend.services.impl;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
@@ -42,5 +42,16 @@ class UserServiceImplTest {
   }
 
   @Test
-  void getUsersByRole(){}
+  void getUsersByRole(){
+    //arrrange
+    User user1 = new User(1L, "test_user", "teacher@gmail.com", "teacher", "image_example");
+    List<User> users = List.of(user1);
+
+    //act
+    when(userRepository.findAllByRole("teacher")).thenReturn((users));
+    List<User> usersTest = userService.getUsersByRole("teacher");
+
+    //assert
+    assertEquals(usersTest, users);
+  }
 }
