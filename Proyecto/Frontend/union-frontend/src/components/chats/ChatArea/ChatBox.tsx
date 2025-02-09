@@ -2,22 +2,36 @@
 
 import { useState, useRef, useEffect } from "react";
 import { BsSend, BsEmojiSmile } from "react-icons/bs";
+import { GoPaperclip } from "react-icons/go";
 import EmojiPicker, { Categories } from "emoji-picker-react";
 import { EmojiStyle } from "emoji-picker-react";
+import ClipMenu from "./ClipMenu";
 
 export default function ChatBox() {
   const [message, setMessage] = useState("");
   const [showPicker, setShowPicker] = useState(false);
+  const [showClipMenu, setShowClipMenu] = useState(false);
+  const [isPollModalOpen, setIsPollModalOpen] = useState(false);
+
   const inputRef = useRef<HTMLInputElement>(null);
-  const pickerRef = useRef<HTMLDivElement>(null);
+  const emojiPickerRef = useRef<HTMLDivElement>(null);
+  const clipMenuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
-        pickerRef.current &&
-        !pickerRef.current.contains(event.target as Node)
+        emojiPickerRef.current &&
+        !emojiPickerRef.current.contains(event.target as Node)
       ) {
         setShowPicker(false);
+      }
+
+      if (
+        clipMenuRef.current &&
+        !clipMenuRef.current.contains(event.target as Node) &&
+        !isPollModalOpen
+      ) {
+        setShowClipMenu(false);
       }
     };
 
@@ -25,7 +39,7 @@ export default function ChatBox() {
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, []);
+  }, [isPollModalOpen]);
 
   const handleEmojiClick = (emojiObject: { emoji: string }) => {
     setMessage((prev) => prev + emojiObject.emoji);
@@ -96,9 +110,9 @@ export default function ChatBox() {
         className="bg-transparent flex-grow p-2 rounded-lg focus:outline-none"
       />
 
-      <div className="relative" ref={pickerRef}>
+      <div className="relative" ref={emojiPickerRef}>
         <BsEmojiSmile
-          size={24}
+          size={25}
           className="cursor-pointer mr-5"
           onClick={() => setShowPicker((prev) => !prev)}
         />
@@ -115,6 +129,15 @@ export default function ChatBox() {
             />
           </div>
         )}
+      </div>
+
+      <div className="relative" ref={clipMenuRef}>
+        <GoPaperclip
+          size={25}
+          className="cursor-pointer mr-5"
+          onClick={() => setShowClipMenu((prev) => !prev)}
+        />
+        {showClipMenu && <ClipMenu setIsPollModalOpen={setIsPollModalOpen} />}
       </div>
 
       <BsSend
