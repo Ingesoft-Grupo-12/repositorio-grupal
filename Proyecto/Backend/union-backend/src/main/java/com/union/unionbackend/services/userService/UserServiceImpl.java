@@ -3,10 +3,8 @@ package com.union.unionbackend.services.userService;
 import com.union.unionbackend.exceptions.UserServiceException;
 import com.union.unionbackend.models.User;
 import com.union.unionbackend.repositories.UserRepository;
-
 import java.util.List;
 import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -74,5 +72,13 @@ public class UserServiceImpl implements UserService {
   @Override
   public List<User> searchUsers(String query) {
     return List.of();
+  }
+
+  @Override
+  public boolean existsById(Long id) {
+    if (id == null) {
+      throw new IllegalArgumentException("ID cannot be null");
+    }
+    return userRepository.existsById(id);
   }
 }

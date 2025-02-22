@@ -13,12 +13,14 @@ public interface UserService {
 
   /**
    * Obtiene todos los usuarios registrados en el sistema.
+   *
    * @return Lista de usuarios.
    */
   List<User> getAllUsers();
 
   /**
    * Obtiene una lista de usuarios según su rol (estudiante o profesor).
+   *
    * @param role El rol de los usuarios a buscar.
    * @return Lista de usuarios con el rol especificado.
    */
@@ -26,6 +28,7 @@ public interface UserService {
 
   /**
    * Busca un usuario por su ID.
+   *
    * @param userId El ID del usuario a buscar.
    * @return Un Optional con el usuario si se encuentra.
    */
@@ -33,6 +36,7 @@ public interface UserService {
 
   /**
    * Busca un usuario por su correo electrónico.
+   *
    * @param email El correo electrónico del usuario.
    * @return Un Optional con el usuario si se encuentra.
    */
@@ -40,6 +44,7 @@ public interface UserService {
 
   /**
    * Crea un nuevo usuario en el sistema.
+   *
    * @param user El objeto usuario con la información a registrar.
    * @return El usuario creado.
    */
@@ -47,14 +52,16 @@ public interface UserService {
 
   /**
    * Actualiza la información de un usuario.
+   *
    * @param userId El ID del usuario a actualizar.
-   * @param user Los nuevos datos del usuario.
+   * @param user   Los nuevos datos del usuario.
    * @return Un Optional con el usuario actualizado si la operación fue exitosa.
    */
   Optional<User> updateUser(Long userId, User user);
 
   /**
    * Elimina un usuario por su ID.
+   *
    * @param userId El ID del usuario a eliminar.
    * @return true si el usuario fue eliminado exitosamente, false en caso contrario.
    */
@@ -62,7 +69,8 @@ public interface UserService {
 
   /**
    * Cambia el rol de un usuario.
-   * @param userId El ID del usuario a actualizar.
+   *
+   * @param userId  El ID del usuario a actualizar.
    * @param newRole El nuevo rol a asignar.
    * @return Un Optional con el usuario actualizado si la operación fue exitosa.
    */
@@ -70,8 +78,11 @@ public interface UserService {
 
   /**
    * Busca usuarios en la plataforma por nombre o correo.
+   *
    * @param query Cadena de búsqueda (nombre o correo).
    * @return Lista de usuarios coincidentes.
    */
   List<User> searchUsers(String query);
+
+  boolean existsById(Long id);
 }

@@ -1,7 +1,9 @@
 package com.union.unionbackend.controllers;
 
 import com.union.unionbackend.dtos.ResponseDto;
+import com.union.unionbackend.dtos.UserDto;
 import com.union.unionbackend.exceptions.UserServiceException;
+import com.union.unionbackend.mapper.UserMapper;
 import com.union.unionbackend.models.User;
 import com.union.unionbackend.services.userService.UserService;
 import java.util.List;
@@ -30,12 +32,13 @@ public class UserController {
   }
 
   @GetMapping("/all")
-  public ResponseEntity<ResponseDto<List<User>>> getAllUsers() {
+  public ResponseEntity<ResponseDto<List<UserDto>>> getAllUsers() {
     try {
+      List<User> users = userService.getAllUsers();
+      List<UserDto> userDtos = UserMapper.INSTANCE.usersToUserDtos(users);
       return ResponseEntity.ok(
               new ResponseDto<>(
-                      "success", userService.getAllUsers(),
-                      "Users retrieved successfully"));
+                  "success", userDtos, "Users retrieved successfully"));
     } catch (UserServiceException e) {
       log.error("An error occurred while retrieving users", e);
       return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -45,11 +48,14 @@ public class UserController {
   }
 
   @GetMapping("/role")
-  public ResponseEntity<ResponseDto<List<User>>> getUsersByRole(@RequestParam String role) {
+  public ResponseEntity<ResponseDto<List<UserDto>>> getUsersByRole(@RequestParam String role) {
     try {
+      List<User> users = userService.getUsersByRole(role);
+      List<UserDto> userDtos = UserMapper.INSTANCE.usersToUserDtos(users);
+
       return ResponseEntity.ok(
               new ResponseDto<>(
-                      "success", userService.getUsersByRole(role),
+                      "success", userDtos,
                       "Users retrieved successfully"));
     } catch (UserServiceException e) {
       log.error("An error occurred while retrieving users by role", e);

@@ -2,65 +2,80 @@ package com.union.unionbackend.services.chatService;
 
 import com.union.unionbackend.models.Chat;
 import java.util.List;
-import java.util.Optional;
 
 public interface ChatService {
 
-    /**
-     * Crea un nuevo chat.
-     * @param chat Información del chat a crear.
-     * @return El chat creado.
-     */
-    Chat createChat(Chat chat);
+  /**
+   * Creates a new chat.
+   *
+   * @param chat Information of the chat to create.
+   * @return The created chat.
+   */
+  Chat createChat(Chat chat);
 
-    /**
-     * Obtiene un chat por su ID.
-     * @param id ID del chat.
-     * @return Un Optional con el chat si se encuentra.
-     */
-    Optional<Chat> getChat(Long id);
+  /**
+   * Retrieves a chat by its ID.
+   *
+   * @param id ID of the chat.
+   * @return The chat with the specified ID.
+   */
+  Chat getChat(Long id);
 
-    /**
-     * Actualiza un chat existente.
-     * @param id ID del chat a actualizar.
-     * @param chat Nuevos datos del chat.
-     * @return Un Optional con el chat actualizado si la operación fue exitosa.
-     */
-    Optional<Chat> updateChat(Long id, Chat chat);
+  /**
+   * Updates an existing chat.
+   *
+   * @param id   ID of the chat to update.
+   * @param chat New data for the chat.
+   * @return The updated chat.
+   */
+  Chat updateChat(Long id, Chat chat);
 
-    /**
-     * Elimina un chat por su ID.
-     * @param id ID del chat a eliminar.
-     * @return true si el chat fue eliminado exitosamente, false en caso contrario.
-     */
-    boolean deleteChat(Long id);
+  /**
+   * Deletes a chat by its ID.
+   *
+   * @param id ID of the chat to delete.
+   * @return true if the chat was successfully deleted, false otherwise.
+   */
+  boolean deleteChat(Long id);
 
-    /**
-     * Obtiene todos los chats en el sistema.
-     * @return Lista de chats.
-     */
-    List<Chat> getAllChats();
+  /**
+   * Retrieves all chats in the system.
+   *
+   * @return List of chats.
+   */
+  List<Chat> getAllChats();
 
-    /**
-     * Obtiene todos los chats en los que un usuario participa.
-     * @param userId ID del usuario.
-     * @return Lista de chats asociados al usuario.
-     */
-    List<Chat> getChatsByUser(Long userId);
+  /**
+   * Retrieves all chats in which a user participates.
+   *
+   * @param userId ID of the user.
+   * @return List of chats associated with the user.
+   */
+  List<Chat> getChatsByUser(Long userId);
 
-    /**
-     * Agrega un usuario a un chat.
-     * @param chatId ID del chat.
-     * @param userId ID del usuario.
-     * @return true si el usuario fue agregado exitosamente, false en caso contrario.
-     */
-    boolean addUserToChat(Long chatId, Long userId);
+  /**
+   * Adds a user to a chat.
+   *
+   * @param chatId ID of the chat.
+   * @param userId ID of the user.
+   * @return true if the user was successfully added, false otherwise.
+   */
+  boolean addUserToChat(Long chatId, Long userId);
 
-    /**
-     * Elimina un usuario de un chat.
-     * @param chatId ID del chat.
-     * @param userId ID del usuario.
-     * @return true si el usuario fue eliminado exitosamente, false en caso contrario.
-     */
-    boolean removeUserFromChat(Long chatId, Long userId);
+  /**
+   * Removes a user from a chat.
+   *
+   * @param chatId ID of the chat.
+   * @param userId ID of the user.
+   * @return true if the user was successfully removed, false otherwise.
+   */
+  boolean removeUserFromChat(Long chatId, Long userId);
+
+  /**
+   * Checks if a chat exists by its ID.
+   *
+   * @param id ID of the chat.
+   * @return true if the chat exists, false otherwise.
+   */
+  boolean existsById(Long id);
 }

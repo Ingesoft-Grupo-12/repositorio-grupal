@@ -1,45 +1,62 @@
 package com.union.unionbackend.services.courseService;
 
 import com.union.unionbackend.models.Course;
-
+import com.union.unionbackend.repositories.CourseRepository;
 import java.io.File;
 import java.util.List;
 import java.util.Optional;
+import org.springframework.stereotype.Service;
 
+@Service
 public class CourseServiceImp implements CourseService {
 
-    @Override
-    public Course createCourse(Course course) {
-        return null;
-    }
+  private final CourseRepository courseRepository;
 
-    @Override
-    public Optional<Course> updateCourse(Long courseId, Course course) {
-        return Optional.empty();
-    }
+  public CourseServiceImp(CourseRepository courseRepository) {
+    this.courseRepository = courseRepository;
+  }
 
-    @Override
-    public boolean deleteCourse(Long id) {
-        return false;
-    }
 
-    @Override
-    public Optional<Course> getCourse(Long id) {
-        return Optional.empty();
-    }
+  @Override
+  public Course createCourse(Course course) {
+    return null;
+  }
 
-    @Override
-    public List<Course> getAllCourses() {
-        return List.of();
-    }
+  @Override
+  public Optional<Course> updateCourse(Long courseId, Course course) {
+    return Optional.empty();
+  }
 
-    @Override
-    public List<Course> getCoursesByTeacher(Long teacherId) {
-        return List.of();
-    }
+  @Override
+  public boolean deleteCourse(Long id) {
+    return false;
+  }
 
-    @Override
-    public String uploadFile(File file) {
-        return "";
+  @Override
+  public Course getCourse(Long id) {
+    return null;
+  }
+
+  @Override
+  public List<Course> getAllCourses() {
+    return List.of();
+  }
+
+  @Override
+  public List<Course> getCoursesByTeacher(Long teacherId) {
+    return List.of();
+  }
+
+  @Override
+  public String uploadFile(File file) {
+    return "";
+  }
+
+  @Override
+  public boolean existsById(Long id) {
+    if (id == null) {
+      throw new IllegalArgumentException("ID cannot be null");
     }
+    return courseRepository.existsById(id);
+  }
 }
