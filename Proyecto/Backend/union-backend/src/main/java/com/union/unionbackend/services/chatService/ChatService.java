@@ -1,5 +1,6 @@
 package com.union.unionbackend.services.chatService;
 
+import com.union.unionbackend.dtos.ChatMessageDto;
 import com.union.unionbackend.models.Chat;
 import java.util.List;
 
@@ -78,4 +79,8 @@ public interface ChatService {
    * @return true if the chat exists, false otherwise.
    */
   boolean existsById(Long id);
+
+  void validateMessage(ChatMessageDto message);
+
+  ChatMessageDto processMessage(ChatMessageDto message);
 }

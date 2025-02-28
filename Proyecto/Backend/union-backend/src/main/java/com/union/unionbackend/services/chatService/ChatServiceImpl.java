@@ -1,10 +1,12 @@
 package com.union.unionbackend.services.chatService;
 
+import com.union.unionbackend.dtos.ChatMessageDto;
 import com.union.unionbackend.models.Chat;
 import com.union.unionbackend.repositories.ChatRepository;
 import com.union.unionbackend.services.userService.UserService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
@@ -100,9 +102,22 @@ public class ChatServiceImpl implements ChatService {
 
   @Override
   public boolean existsById(Long id) {
-    if(id == null) {
+    if (id == null) {
       throw new IllegalArgumentException("ID cannot be null");
     }
     return chatRepository.existsById(id);
+  }
+
+  @Override
+  public void validateMessage(ChatMessageDto message) {
+    if (message.content().isBlank()) {
+      throw new IllegalArgumentException("Message content cannot be blank");
+    }
+  }
+
+  @Override
+  public ChatMessageDto processMessage(ChatMessageDto message) {
+    log.info("Mensaje procesado: {}", message.content());
+    return new ChatMessageDto(message.sender(), message.content(), LocalDateTime.now());
   }
 }
