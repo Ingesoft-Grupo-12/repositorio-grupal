@@ -1,6 +1,7 @@
 package com.union.unionbackend.repositories;
 
 import com.union.unionbackend.models.ChatParticipant;
+import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -10,4 +11,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ChatParticipantRepository extends JpaRepository<ChatParticipant, Long> {
 
+  List<ChatParticipant> findAllByChatId(Long chatId);
 }

@@ -1,8 +1,11 @@
 package com.union.unionbackend.controllers;
 
 import com.union.unionbackend.dtos.ResponseDto;
+import com.union.unionbackend.dtos.UserDto;
+import com.union.unionbackend.exceptions.UserServiceException;
+import com.union.unionbackend.mapper.UserMapper;
 import com.union.unionbackend.models.User;
-import com.union.unionbackend.services.UserService;
+import com.union.unionbackend.services.userService.UserService;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * Controlador para gestionar operaciones relacionadas con los usuarios.
+ * Controller for managing user-related operations.
  */
 @RestController
 @RequestMapping("/user")
@@ -23,55 +26,42 @@ public class UserController {
 
   private final UserService userService;
 
-  /**
-   * Constructor de UserController.
-   *
-   * @param userService Servicio de usuarios.
-   */
   @Autowired
   public UserController(UserService userService) {
     this.userService = userService;
   }
 
-  /**
-   * Obtiene la lista de todos los usuarios.
-   *
-   * @return ResponseEntity con la lista de usuarios.
-   */
   @GetMapping("/all")
-  public ResponseEntity<ResponseDto<List<User>>> getAllUsers() {
+  public ResponseEntity<ResponseDto<List<UserDto>>> getAllUsers() {
     try {
+      List<User> users = userService.getAllUsers();
+      List<UserDto> userDtos = UserMapper.INSTANCE.usersToUserDtos(users);
       return ResponseEntity.ok(
-          new ResponseDto<>(
-              "success", userService.getAllUsers(),
-              "Se han obtenido los usuarios exitosamente"));
-    } catch (Exception e) {
-      log.error("Ocurrió un error al obtener los usuarios", e);
+              new ResponseDto<>(
+                  "success", userDtos, "Users retrieved successfully"));
+    } catch (UserServiceException e) {
+      log.error("An error occurred while retrieving users", e);
       return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-          .body(new ResponseDto<>("error", null,
-              "Ocurrió un error inesperado: " + e.getMessage()));
+              .body(new ResponseDto<>("error", null,
+                      "An unexpected error occurred: " + e.getMessage()));
     }
   }
 
-  /**
-   * Obtiene la lista de usuarios por rol.
-   *
-   * @param role Rol de los usuarios a filtrar.
-   * @return ResponseEntity con la lista de usuarios filtrada por rol.
-   */
   @GetMapping("/role")
-  public ResponseEntity<ResponseDto<List<User>>> getUsersByRole(@RequestParam String role) {
+  public ResponseEntity<ResponseDto<List<UserDto>>> getUsersByRole(@RequestParam String role) {
     try {
+      List<User> users = userService.getUsersByRole(role);
+      List<UserDto> userDtos = UserMapper.INSTANCE.usersToUserDtos(users);
+
       return ResponseEntity.ok(
-          new ResponseDto<>(
-              "success", userService.getUsersByRole(role),
-              "Se han obtenido los usuarios exitosamente"));
-    } catch (Exception e) {
-      log.error("Ocurrió un error al obtener los usuarios", e);
+              new ResponseDto<>(
+                      "success", userDtos,
+                      "Users retrieved successfully"));
+    } catch (UserServiceException e) {
+      log.error("An error occurred while retrieving users by role", e);
       return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-          .body(new ResponseDto<>("error", null,
-              "Ocurrió un error inesperado: " + e.getMessage()));
+              .body(new ResponseDto<>("error", null,
+                      "An unexpected error occurred: " + e.getMessage()));
     }
   }
 }
-
