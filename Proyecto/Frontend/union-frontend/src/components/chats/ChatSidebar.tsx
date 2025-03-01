@@ -8,12 +8,13 @@ import { ChatDataType, FriendType, ModuleType } from "@/app/chats/chatsTypings";
 import { FaPlus } from "react-icons/fa";
 import { FiSearch } from "react-icons/fi";
 import AddFriendModal from "./Modals/AddFriendsModal";
+import NewChatModal from "./Modals/NewChatModal";
 
 type ChatSidebarProps = {
   selectedModule: ModuleType;
   selectedChat: ChatDataType | null;
   selectedFriend: FriendType | null;
-  setSelectedChat: (option: ChatDataType) => void;
+  setSelectedChat: (option: ChatDataType | null) => void;
   setSelectedFriend: (option: FriendType) => void;
 };
 
@@ -31,6 +32,7 @@ export default function ChatSidebar({
   const [searchQuery, setSearchQuery] = useState("");
   const [tempSearchQuery, setTempSearchQuery] = useState("");
   const [addFriendModalOpen, setAddFriendModalOpen] = useState(false);
+  const [newChatModalOpen, setNewChatModalOpen] = useState(false);
 
   useEffect(() => {
     if (selectedModule === "messages") {
@@ -91,8 +93,6 @@ export default function ChatSidebar({
       return "Mensajes";
     } else if (module === "friends") {
       return "Amigos";
-    } else if (module === "transport") {
-      return "Transporte";
     }
   };
 
@@ -153,8 +153,6 @@ export default function ChatSidebar({
   const getPlaceholder = (module: ModuleType) => {
     if (module === "messages") return "Buscar chats...";
     if (module === "friends") return "Buscar amigos...";
-    if (module === "transport") return "Buscar transportes...";
-    return "Buscar...";
   };
 
   return (
@@ -180,6 +178,7 @@ export default function ChatSidebar({
           className="p-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
           onClick={() => {
             if (selectedModule === "messages") {
+              setNewChatModalOpen(!newChatModalOpen);
               console.log("Crear nuevo chat");
             } else if (selectedModule === "friends") {
               setAddFriendModalOpen(!addFriendModalOpen);
@@ -192,6 +191,13 @@ export default function ChatSidebar({
           <AddFriendModal
             isOpen={addFriendModalOpen}
             handleClose={() => setAddFriendModalOpen(false)}
+          />
+        )}
+        {newChatModalOpen && (
+          <NewChatModal
+            isOpen={newChatModalOpen}
+            setSelectedChat={setSelectedChat}
+            handleClose={() => setNewChatModalOpen(false)}
           />
         )}
       </div>

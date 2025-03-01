@@ -10,7 +10,7 @@ export async function GET() {
       requestStatus: "accepted",
     },
     {
-      userId: 2,
+      userId: 7,
       userImage: "https://picsum.photos/id/202/48",
       userName: "Pablo Gomez",
       email: "pablogomez@unal.edu.co",

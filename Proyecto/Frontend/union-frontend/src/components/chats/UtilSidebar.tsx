@@ -1,7 +1,7 @@
 "use client";
 import Image from "next/image";
 import Link from "next/link";
-import { FaCarSide, FaCog, FaUserFriends } from "react-icons/fa";
+import { FaCog, FaUserFriends } from "react-icons/fa";
 import { LuMessageSquareMore } from "react-icons/lu";
 import { useUser } from "@auth0/nextjs-auth0/client";
 import DefaultAvatar from "@/assets/images/default-avatar.svg";
@@ -18,7 +18,6 @@ type IconType = React.ComponentType<{ size?: number; className?: string }>;
 const menuItems: { module: ModuleType; icon: IconType }[] = [
   { module: "messages", icon: LuMessageSquareMore },
   { module: "friends", icon: FaUserFriends },
-  { module: "transport", icon: FaCarSide },
 ];
 
 export default function UtilSidebar({

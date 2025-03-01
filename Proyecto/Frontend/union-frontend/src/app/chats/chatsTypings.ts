@@ -27,4 +27,4 @@ export type SelectedChatDataType = {
   userName: string;
 };
 
-export type ModuleType = "messages" | "friends" | "transport";
+export type ModuleType = "messages" | "friends";

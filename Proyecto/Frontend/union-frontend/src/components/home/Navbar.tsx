@@ -62,18 +62,22 @@ export default function Navbar() {
                     height={40}
                     className="rounded-full"
                   />
-                  {isMenuOpen ? <FaChevronDown /> : <FaChevronUp />}
+                  {isMenuOpen ? <FaChevronUp /> : <FaChevronDown />}
                 </div>
-                {isMenuOpen && (
-                  <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg z-10">
-                    <Link
-                      href="/api/auth/logout"
-                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                    >
-                      Log Out
-                    </Link>
-                  </div>
-                )}
+                <div
+                  className={`absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg z-10 transition-all duration-200 ease-in-out transform ${
+                    isMenuOpen
+                      ? "opacity-100 scale-100"
+                      : "opacity-0 scale-95"
+                  }`}
+                >
+                  <Link
+                    href="/api/auth/logout"
+                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                  >
+                    Log Out
+                  </Link>
+                </div>
               </div>
             ) : (
               <Link href="/api/auth/login" className="hover:text-gray-400">

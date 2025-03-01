@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import ReactPortal from "@/components/shared/ReactPortal";
 import { FiSearch } from "react-icons/fi";
-import FriendCard from "@/components/chats/FriendCard/FriendCard";
+import AddFriendCard from "@/components/chats/FriendCard/AddFriendCard";
 import { FriendType } from "@/app/chats/chatsTypings";
 
 type AddFriendsModalProps = {
@@ -64,7 +64,7 @@ export default function AddFriendsModal({
             <FiSearch className="absolute left-3 top-3 text-gray-400" />
             <input
               type="text"
-              placeholder="Buscar amigos..."
+              placeholder="Buscar usuarios..."
               value={tempSearchQuery}
               onChange={(e) => setTempSearchQuery(e.target.value)}
               className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -82,23 +82,7 @@ export default function AddFriendsModal({
                     key={user.userId}
                     className="flex justify-between items-center p-2"
                   >
-                    <FriendCard {...user} />
-                    {(!user.requestStatus ||
-                      user.requestStatus === "denied") && (
-                      <button className="bg-blue-500 text-white px-3 py-1 rounded-lg text-sm">
-                        Añadir amigo
-                      </button>
-                    )}
-                    {user.requestStatus === "accepted" && (
-                      <span className="text-green-500 text-sm">
-                        Añadido
-                      </span>
-                    )}
-                    {user.requestStatus === "pending" && (
-                      <span className="text-gray-500 text-sm">
-                        Pendiente
-                      </span>
-                    )}
+                    <AddFriendCard {...user} />
                   </div>
                 ))}
               </div>
