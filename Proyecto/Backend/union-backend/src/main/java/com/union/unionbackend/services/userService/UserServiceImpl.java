@@ -1,8 +1,9 @@
 package com.union.unionbackend.services.userService;
 
-import com.union.unionbackend.exceptions.UserServiceException;
+import com.union.unionbackend.models.Role;
 import com.union.unionbackend.models.User;
 import com.union.unionbackend.repositories.UserRepository;
+import jakarta.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,22 +22,15 @@ public class UserServiceImpl implements UserService {
     this.userRepository = userRepository;
   }
 
+
   @Override
   public List<User> getAllUsers() {
-    try {
-      return userRepository.findAll();
-    } catch (Exception e) {
-      throw new UserServiceException("Error retrieving users", e);
-    }
+    return List.of();
   }
 
   @Override
   public List<User> getUsersByRole(String role) {
-    try {
-      return userRepository.findAllByRole(role);
-    } catch (Exception e) {
-      throw new UserServiceException("Error retrieving users by role", e);
-    }
+    return List.of();
   }
 
   @Override
@@ -75,10 +69,26 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
-  public boolean existsById(Long id) {
-    if (id == null) {
-      throw new IllegalArgumentException("ID cannot be null");
-    }
-    return userRepository.existsById(id);
+  public boolean existsById(String id) {
+    return false;
+  }
+
+  @Transactional
+  @Override
+  public User syncUser(String auth0Id, String email, String name) {
+    return userRepository.findById(auth0Id)
+        .map(existingUser -> {
+          existingUser.setEmail(email);
+          existingUser.setName(name);
+          return userRepository.save(existingUser);
+        })
+        .orElseGet(() -> {
+          User newUser = new User();
+          newUser.setId(auth0Id);
+          newUser.setEmail(email);
+          newUser.setName(name);
+          newUser.setRole(Role.STUDENT); // Rol por defecto
+          return userRepository.save(newUser);
+        });
   }
 }

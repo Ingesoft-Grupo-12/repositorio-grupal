@@ -8,49 +8,45 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-/**
- * Model class for messages. Represents a message with its ID, chat ID, sender ID, content, and
- * timestamp.
- */
 @Entity
-@Table(name = "messages")
+@Table(name = "threads")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Message {
+public class Thread {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
   @NotBlank
-  @Column(columnDefinition = "TEXT", nullable = false)
-  private String content;
-
-  @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "sender_id", nullable = false)
-  private User sender;
+  @Size(max = 200)
+  @Column(nullable = false)
+  private String title;
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "course_id", nullable = false)
   private Course course;
 
-  @Column(nullable = false)
-  private LocalDateTime sentAt;
+  @OneToMany(mappedBy = "thread", fetch = FetchType.LAZY)
+  @Builder.Default
+  private Set<Message> messages = new HashSet<>();
 
-  // Relación con hilos (opcional)
-  @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "thread_id")
-  private Thread thread;
+  @Column(nullable = false)
+  private LocalDateTime createdAt;
 }

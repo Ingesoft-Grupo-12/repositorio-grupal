@@ -7,8 +7,8 @@ import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
 
 /**
- * Configuration class for WebSocket message broker.
- * Enables WebSocket message handling, backed by a message broker.
+ * Configuration class for WebSocket message broker. Enables WebSocket message handling, backed by a
+ * message broker.
  */
 @Configuration
 @EnableWebSocketMessageBroker

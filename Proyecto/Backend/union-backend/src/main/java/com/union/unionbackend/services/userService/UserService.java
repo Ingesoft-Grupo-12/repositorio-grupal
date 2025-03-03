@@ -1,6 +1,7 @@
 package com.union.unionbackend.services.userService;
 
 import com.union.unionbackend.models.User;
+import jakarta.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.stereotype.Service;
@@ -84,5 +85,8 @@ public interface UserService {
    */
   List<User> searchUsers(String query);
 
-  boolean existsById(Long id);
+  boolean existsById(String id);
+
+  @Transactional
+  User syncUser(String auth0Id, String email, String name);
 }
