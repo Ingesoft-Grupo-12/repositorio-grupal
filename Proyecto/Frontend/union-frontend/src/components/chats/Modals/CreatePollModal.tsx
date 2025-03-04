@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { FaPlus, FaTrash } from "react-icons/fa";
-import { BsEmojiSmile } from "react-icons/bs";
 import ReactPortal from "@/components/shared/ReactPortal";
 
 type CreatePollModalProps = {
@@ -19,6 +18,8 @@ export default function CreatePollModal({
   const [allowMultiple, setAllowMultiple] = useState(true);
   const [error, setError] = useState("");
   const [maxDateTime, setMaxDateTime] = useState("");
+
+  if (!isOpen) return null;
 
   const addOption = () => {
     if (options.length < 10) {
@@ -110,7 +111,6 @@ export default function CreatePollModal({
               value={question}
               onChange={(e) => setQuestion(e.target.value)}
             />
-            <BsEmojiSmile className="absolute right-3 top-3 text-gray-400" />
           </div>
           Opciones
           <div className="mt-3">

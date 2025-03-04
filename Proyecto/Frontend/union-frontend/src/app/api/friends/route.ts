@@ -6,14 +6,14 @@ export async function GET() {
       userId: 1,
       userImage: "https://picsum.photos/id/100/48",
       userName: "John Doe",
-      email: "jhondoe@unal.edu.co",
+      userEmail: "jhondoe@unal.edu.co",
       requestStatus: "accepted",
     },
     {
-      userId: 2,
+      userId: 7,
       userImage: "https://picsum.photos/id/202/48",
       userName: "Pablo Gomez",
-      email: "pablogomez@unal.edu.co",
+      userEmail: "pablogomez@unal.edu.co",
       requestStatus: "accepted",
     },
   ]);

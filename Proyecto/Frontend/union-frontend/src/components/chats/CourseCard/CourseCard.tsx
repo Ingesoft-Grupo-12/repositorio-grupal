@@ -5,21 +5,23 @@ import Image from "next/image";
 import { format, isToday, isThisWeek } from "date-fns";
 import { es } from "date-fns/locale";
 
-type ChatCardProps = {
-  userId: number;
-  userImage: string;
-  userName: string;
+type CourseCardProps = {
+  courseId: number;
+  courseImage: string;
+  courseName: string;
+  lastUserName: string;
   lastMessage: string;
   lastMessageTime: string;
 };
 
-export default function ChatCard({
-  userId,
-  userImage,
-  userName,
+export default function CourseCard({
+  courseId,
+  courseImage,
+  courseName,
+  lastUserName,
   lastMessage,
   lastMessageTime,
-}: ChatCardProps) {
+}: CourseCardProps) {
   const lastMessageDate = new Date(lastMessageTime);
   const [menuOpen, setMenuOpen] = useState(false);
   const [menuPosition, setMenuPosition] = useState({ x: 0, y: 0 });
@@ -54,7 +56,7 @@ export default function ChatCard({
 
   const handleDeleteClick = (event: React.MouseEvent) => {
     event.stopPropagation();
-    console.log("API-Eliminar Chat", userId);
+    console.log("API-Eliminar Curso", courseId);
     setMenuOpen(false);
   };
 
@@ -62,15 +64,17 @@ export default function ChatCard({
     <div className="relative" onContextMenu={handleContextMenu}>
       <div className="flex items-center p-4 cursor-pointer hover:bg-gray-100">
         <Image
-          src={userImage}
+          src={courseImage}
           width={48}
           height={48}
-          alt={`${userName}'s avatar`}
+          alt={`${courseName}'s avatar`}
           className="rounded-full object-cover flex-shrink-0"
         />
         <div className="ml-4 flex-grow min-w-0">
-          <div className="font-medium truncate">{userName}</div>
-          <div className="text-sm text-gray-400 truncate">{lastMessage}</div>
+          <div className="font-medium truncate">{courseName}</div>
+          <div className="text-sm text-gray-400 truncate">
+            {"~" + lastUserName + ": " + lastMessage}
+          </div>
         </div>
         <div className="text-xs text-gray-500 flex-shrink-0 whitespace-nowrap">
           {displayTime}
@@ -86,7 +90,7 @@ export default function ChatCard({
             className="text-red-500 px-4 py-2 w-full text-left hover:bg-gray-100"
             onClick={handleDeleteClick}
           >
-            Eliminar chat
+            Eliminar curso
           </button>
         </div>
       )}
