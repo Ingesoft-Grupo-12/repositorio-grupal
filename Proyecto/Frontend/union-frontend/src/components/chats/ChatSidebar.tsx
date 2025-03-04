@@ -2,20 +2,31 @@
 
 import { useEffect, useState } from "react";
 import ChatCard from "./ChatCard/ChatCard";
-import FriendCard from "./FriendCard/FriendCard";
 import SkeletonChatCard from "./ChatCard/SkeletonChatCard";
-import { ChatDataType, FriendType, ModuleType } from "@/app/chats/chatsTypings";
+import FriendCard from "./FriendCard/FriendCard";
+import SkeletonFriendCard from "./FriendCard/SkeletonFriendCard";
+import CourseCard from "./CourseCard/CourseCard";
+import SkeletonCourseCard from "./CourseCard/SkeletonCourseCard";
+import {
+  ChatDataType,
+  UserType,
+  ModuleType,
+  CourseType,
+} from "@/app/chats/chatsTypings";
 import { FaPlus } from "react-icons/fa";
 import { FiSearch } from "react-icons/fi";
-import AddFriendModal from "./Modals/AddFriendsModal";
 import NewChatModal from "./Modals/NewChatModal";
+import AddFriendModal from "./Modals/AddFriendsModal";
+import NewCourseModal from "./Modals/NewCourseModal";
 
 type ChatSidebarProps = {
   selectedModule: ModuleType;
   selectedChat: ChatDataType | null;
-  selectedFriend: FriendType | null;
   setSelectedChat: (option: ChatDataType | null) => void;
-  setSelectedFriend: (option: FriendType) => void;
+  selectedFriend: UserType | null;
+  setSelectedFriend: (option: UserType | null) => void;
+  selectedCourse: CourseType | null;
+  setSelectedCourse: (option: CourseType | null) => void;
 };
 
 export default function ChatSidebar({
@@ -24,23 +35,36 @@ export default function ChatSidebar({
   setSelectedChat,
   selectedFriend,
   setSelectedFriend,
+  selectedCourse,
+  setSelectedCourse,
 }: ChatSidebarProps) {
   const [sidebarChats, setSidebarChats] = useState<ChatDataType[]>([]);
   const [messageLoading, setMessageLoading] = useState(false);
-  const [sidebarFriends, setSidebarFriends] = useState<FriendType[]>([]);
+  const [sidebarFriends, setSidebarFriends] = useState<UserType[]>([]);
   const [friendsLoading, setFriendsLoading] = useState(false);
+  const [sidebarCourses, setSidebarCourses] = useState<CourseType[]>([]);
+  const [coursesLoading, setCoursesLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [tempSearchQuery, setTempSearchQuery] = useState("");
-  const [addFriendModalOpen, setAddFriendModalOpen] = useState(false);
   const [newChatModalOpen, setNewChatModalOpen] = useState(false);
+  const [addFriendModalOpen, setAddFriendModalOpen] = useState(false);
+  const [newCourseModalOpen, setNewCourseModalOpen] = useState(false);
 
   useEffect(() => {
     if (selectedModule === "messages") {
       fetchChats();
     } else if (selectedModule === "friends") {
       fetchFriends();
+    } else if (selectedModule === "courses") {
+      fetchCourses();
     }
   }, [selectedModule]);
+
+  useEffect(() => {
+    setSelectedChat(null);
+    setSelectedFriend(null);
+    setSelectedCourse(null);
+  }, [selectedModule, setSelectedChat, setSelectedCourse, setSelectedFriend]);
 
   useEffect(() => {
     const debounceTimeout = setTimeout(() => {
@@ -69,12 +93,26 @@ export default function ChatSidebar({
     try {
       const response = await fetch("http://localhost:3000/api/friends");
       if (!response.ok) throw new Error("Failed to fetch friends");
-      const data: FriendType[] = await response.json();
+      const data: UserType[] = await response.json();
       setSidebarFriends(data);
     } catch (error) {
       console.error("Error fetching friends:", error);
     } finally {
       setFriendsLoading(false);
+    }
+  };
+
+  const fetchCourses = async () => {
+    setCoursesLoading(true);
+    try {
+      const response = await fetch("http://localhost:3000/api/courses");
+      if (!response.ok) throw new Error("Failed to fetch courses");
+      const data: CourseType[] = await response.json();
+      setSidebarCourses(data);
+    } catch (error) {
+      console.error("Error fetching chats:", error);
+    } finally {
+      setCoursesLoading(false);
     }
   };
 
@@ -85,14 +123,20 @@ export default function ChatSidebar({
   const filteredFriends = sidebarFriends.filter(
     (friend) =>
       friend.userName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      friend.email.toLowerCase().includes(searchQuery.toLowerCase())
+      friend.userEmail.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  const filteredCourses = sidebarCourses.filter((course) =>
+    course.courseName.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   const renderModuleTitle = (module: ModuleType) => {
     if (module === "messages") {
-      return "Mensajes";
+      return "Mensajes individuales";
     } else if (module === "friends") {
       return "Amigos";
+    } else if (module === "courses") {
+      return "Cursos";
     }
   };
 
@@ -124,7 +168,7 @@ export default function ChatSidebar({
   };
 
   const renderFriends = () => {
-    if (friendsLoading) return <SkeletonChatCard numberOfCards={10} />;
+    if (friendsLoading) return <SkeletonFriendCard numberOfCards={10} />;
     if (filteredFriends.length === 0)
       return (
         <div className="flex justify-center items-center h-full text-gray-500 text-center px-4">
@@ -150,9 +194,39 @@ export default function ChatSidebar({
     });
   };
 
+  const renderCourses = () => {
+    if (coursesLoading) return <SkeletonCourseCard numberOfCards={10} />;
+    if (filteredCourses.length === 0 && !searchQuery)
+      return (
+        <div className="flex justify-center items-center h-full text-gray-500 text-center px-4">
+          <p className="break-words max-w-full">
+            No tienes cursos activos, inicia uno :D
+          </p>
+        </div>
+      );
+
+    return filteredCourses.map((course) => {
+      const isSelected = selectedCourse?.courseId === course.courseId;
+      return (
+        <div
+          key={course.courseId}
+          className={`cursor-pointer ${
+            isSelected ? "bg-gray-100" : "hover:bg-gray-100"
+          }`}
+          onClick={() => {
+            setSelectedCourse(course);
+          }}
+        >
+          <CourseCard {...course} />
+        </div>
+      );
+    });
+  };
+
   const getPlaceholder = (module: ModuleType) => {
     if (module === "messages") return "Buscar chats...";
     if (module === "friends") return "Buscar amigos...";
+    if (module === "courses") return "Buscar cursos...";
   };
 
   return (
@@ -182,6 +256,8 @@ export default function ChatSidebar({
               console.log("Crear nuevo chat");
             } else if (selectedModule === "friends") {
               setAddFriendModalOpen(!addFriendModalOpen);
+            } else if (selectedModule === "courses") {
+              setNewCourseModalOpen(!newCourseModalOpen);
             }
           }}
         >
@@ -200,11 +276,18 @@ export default function ChatSidebar({
             handleClose={() => setNewChatModalOpen(false)}
           />
         )}
+        {newCourseModalOpen && (
+          <NewCourseModal
+            isOpen={newCourseModalOpen}
+            handleClose={() => setNewCourseModalOpen(false)}
+          />
+        )}
       </div>
 
       <div className="overflow-y-auto">
         {selectedModule === "messages" && renderChats()}
         {selectedModule === "friends" && renderFriends()}
+        {selectedModule === "courses" && renderCourses()}
       </div>
     </div>
   );

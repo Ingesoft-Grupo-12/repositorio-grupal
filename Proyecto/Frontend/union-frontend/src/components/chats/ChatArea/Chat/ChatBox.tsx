@@ -6,7 +6,7 @@ import { GoPaperclip } from "react-icons/go";
 import EmojiPicker from "emoji-picker-react";
 import { EmojiStyle } from "emoji-picker-react";
 import { hiddenEmojis, categories } from "@/data/emojiPickerConfig";
-import ClipMenu from "./ClipMenu";
+import ClipMenu from "../ClipMenu";
 
 export default function ChatBox() {
   const [message, setMessage] = useState("");

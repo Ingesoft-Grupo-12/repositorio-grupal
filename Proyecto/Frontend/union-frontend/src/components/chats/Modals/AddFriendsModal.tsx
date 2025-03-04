@@ -1,10 +1,10 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import ReactPortal from "@/components/shared/ReactPortal";
 import { FiSearch } from "react-icons/fi";
 import AddFriendCard from "@/components/chats/FriendCard/AddFriendCard";
-import { FriendType } from "@/app/chats/chatsTypings";
+import { UserType } from "@/app/chats/chatsTypings";
 
 type AddFriendsModalProps = {
   isOpen: boolean;
@@ -17,7 +17,7 @@ export default function AddFriendsModal({
 }: AddFriendsModalProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const [tempSearchQuery, setTempSearchQuery] = useState("");
-  const [searchResults, setSearchResults] = useState<FriendType[]>([]);
+  const [searchResults, setSearchResults] = useState<UserType[]>([]);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {

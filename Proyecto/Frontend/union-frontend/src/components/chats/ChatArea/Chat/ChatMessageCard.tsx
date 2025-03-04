@@ -1,16 +1,16 @@
 "use client";
 
-type MessageCardProps = {
+type ChatMessageCardProps = {
   message: string;
   time: string;
   isCurrentUser: boolean;
 };
 
-export default function MessageCard({
+export default function ChatMessageCard({
   message,
   time,
   isCurrentUser,
-}: MessageCardProps) {
+}: ChatMessageCardProps) {
   return (
     <div
       className={`flex ${isCurrentUser ? "justify-end" : "justify-start"} mb-4`}

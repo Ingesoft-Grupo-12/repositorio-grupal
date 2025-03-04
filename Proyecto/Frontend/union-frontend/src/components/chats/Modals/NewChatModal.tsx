@@ -4,21 +4,21 @@ import React, { useState, useEffect } from "react";
 import ReactPortal from "@/components/shared/ReactPortal";
 import { FiSearch } from "react-icons/fi";
 import AddFriendCard from "@/components/chats/FriendCard/AddFriendCard";
-import { FriendType, ChatDataType } from "@/app/chats/chatsTypings";
+import { UserType, ChatDataType } from "@/app/chats/chatsTypings";
 
-type AddFriendsModalProps = {
+type NewChatModalProps = {
   isOpen: boolean;
   setSelectedChat: (option: ChatDataType | null) => void;
   handleClose: () => void;
 };
 
-export default function AddFriendsModal({
+export default function NewChatModal({
   isOpen,
   setSelectedChat,
   handleClose,
-}: AddFriendsModalProps) {
+}: NewChatModalProps) {
   const [friendsLoading, setFriendsLoading] = useState(false);
-  const [friends, setFriends] = useState<FriendType[]>([]);
+  const [friends, setFriends] = useState<UserType[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
@@ -32,7 +32,7 @@ export default function AddFriendsModal({
     try {
       const response = await fetch("/api/friends");
       if (!response.ok) throw new Error("Failed to fetch friends");
-      const data: FriendType[] = await response.json();
+      const data: UserType[] = await response.json();
       setFriends(data);
     } catch (error) {
       console.error("Error fetching friends:", error);
@@ -44,10 +44,10 @@ export default function AddFriendsModal({
   const filteredFriends = friends.filter(
     (friend) =>
       friend.userName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      friend.email.toLowerCase().includes(searchQuery.toLowerCase())
+      friend.userEmail.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  const handleSelectFriend = (friend: FriendType) => {
+  const handleSelectFriend = (friend: UserType) => {
     const chatData: ChatDataType = {
       userId: friend.userId,
       userImage: friend.userImage,

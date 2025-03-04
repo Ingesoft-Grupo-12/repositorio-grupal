@@ -8,14 +8,14 @@ type FriendChatCardProps = {
   userId: number;
   userImage: string;
   userName: string;
-  email: string;
+  userEmail: string;
 };
 
 export default function FriendChatCard({
   userId,
   userImage,
   userName,
-  email,
+  userEmail,
 }: FriendChatCardProps) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [menuPosition, setMenuPosition] = useState({ x: 0, y: 0 });
@@ -59,7 +59,7 @@ export default function FriendChatCard({
       />
       <div className="ml-4 flex-grow min-w-0">
         <div className="font-medium truncate">{userName}</div>
-        <div className="text-sm text-gray-400 truncate">{email}</div>
+        <div className="text-sm text-gray-400 truncate">{userEmail}</div>
       </div>
       {menuOpen && (
         <div

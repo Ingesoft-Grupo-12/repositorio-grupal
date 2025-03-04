@@ -1,13 +1,13 @@
 "use client";
 
-import MessageCard from "./MessageCard";
+import MessageCard from "./ChatMessageCard";
 import { MessageType } from "@/app/chats/chatsTypings";
 import { format, isYesterday, isToday, isThisWeek } from "date-fns";
 import { es } from "date-fns/locale";
 
 type ChatBodyProps = {
-  messages: MessageType[];
-  userId: number;
+  chatMessages: MessageType[];
+  userId: number | null;
 };
 
 const getDateLabel = (date: Date) => {
@@ -22,16 +22,16 @@ const getDateLabel = (date: Date) => {
 
 const formatTime = (date: Date) => format(date, "hh:mm a");
 
-export default function ChatBody({ messages, userId }: ChatBodyProps) {
+export default function ChatBody({ chatMessages, userId }: ChatBodyProps) {
   let lastDateLabel = "";
 
   return (
     <div className="flex flex-col justify-start bg-gray-200 p-4 rounded-md h-full">
       <div className="max-w-4xl w-full mx-auto overflow-y-auto">
-        {messages.length === 0 ? (
+        {chatMessages.length === 0 ? (
           <p className="text-gray-500 text-center">No hay mensajes</p>
         ) : (
-          messages.map((msg) => {
+          chatMessages.map((msg) => {
             const messageDate = new Date(msg.time);
             const dateLabel = getDateLabel(messageDate);
             const showDateLabel = dateLabel !== lastDateLabel;

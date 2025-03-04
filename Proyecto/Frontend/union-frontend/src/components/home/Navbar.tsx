@@ -36,7 +36,13 @@ export default function Navbar() {
         <div className="flex justify-between h-16 items-center pt-12">
           <div className="flex-shrink-0 ml-12">
             <Link href="/">
-              <Image src="/logo-black.svg" alt="logo" width={60} height={60} />
+              <Image
+                src="/logo-black.svg"
+                alt="logo"
+                width={60}
+                height={60}
+                style={{ width: 60, height: 60 }}
+              />
             </Link>
           </div>
 
@@ -66,9 +72,7 @@ export default function Navbar() {
                 </div>
                 <div
                   className={`absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg z-10 transition-all duration-200 ease-in-out transform ${
-                    isMenuOpen
-                      ? "opacity-100 scale-100"
-                      : "opacity-0 scale-95"
+                    isMenuOpen ? "opacity-100 scale-100" : "opacity-0 scale-95"
                   }`}
                 >
                   <Link
