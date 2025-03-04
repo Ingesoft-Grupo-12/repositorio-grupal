@@ -1,12 +1,14 @@
 package com.union.unionbackend.controllers;
 
+import com.union.unionbackend.dtos.MessageDto;
 import com.union.unionbackend.dtos.MessageRequest;
 import com.union.unionbackend.models.Course;
 import com.union.unionbackend.models.Message;
 import com.union.unionbackend.models.User;
 import com.union.unionbackend.repositories.MessageRepository;
 import com.union.unionbackend.services.courseService.CourseService;
-import java.security.Principal;
+import com.union.unionbackend.services.userService.UserService;
+import java.time.Instant;
 import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
@@ -22,15 +24,15 @@ public class CourseChatController {
   private final MessageRepository messageRepository;
   private final CourseService courseService;
   private final SimpMessagingTemplate messagingTemplate;
+  private final UserService userService;
 
   @MessageMapping("/chat/{courseId}/send")
   public void handleChatMessage(
       @DestinationVariable Long courseId,
-      @Payload MessageRequest messageRequest,
-      Principal principal
+      @Payload MessageRequest messageRequest
   ) {
     // Obtener usuario autenticado desde el token JWT
-    User sender = courseService.getAuthenticatedUser(principal.getName());
+    User sender = userService.getUserById(messageRequest.getSenderId());
 
     // Validar acceso al curso (profesor o estudiante inscrito)
     Course course = courseService.validateCourseMembership(sender.getId(), courseId);
@@ -48,7 +50,7 @@ public class CourseChatController {
     // Enviar mensaje a los suscriptores del curso
     messagingTemplate.convertAndSend(
         "/topic/courses/" + courseId + "/chat",
-        message
+        new MessageDto(sender.getName(), message.getContent(), Instant.now())
     );
   }
 }

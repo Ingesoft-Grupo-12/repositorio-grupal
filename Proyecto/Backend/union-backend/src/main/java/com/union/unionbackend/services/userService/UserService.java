@@ -1,9 +1,11 @@
 package com.union.unionbackend.services.userService;
 
+import com.union.unionbackend.dtos.AuthUserInfo;
 import com.union.unionbackend.models.User;
 import jakarta.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 
 /**
@@ -33,7 +35,7 @@ public interface UserService {
    * @param userId El ID del usuario a buscar.
    * @return Un Optional con el usuario si se encuentra.
    */
-  Optional<User> getUserById(Long userId);
+  User getUserById(String userId);
 
   /**
    * Busca un usuario por su correo electrónico.
@@ -89,4 +91,8 @@ public interface UserService {
 
   @Transactional
   User syncUser(String auth0Id, String email, String name);
+
+  User getOrCreateUser(Jwt jwt);
+
+  AuthUserInfo getWithBearerToken(String token);
 }

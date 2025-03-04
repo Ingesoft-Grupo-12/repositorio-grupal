@@ -1,7 +1,6 @@
 package com.union.unionbackend.services.courseService;
 
 import com.union.unionbackend.models.Course;
-import com.union.unionbackend.models.User;
 import java.io.File;
 import java.util.List;
 import java.util.Optional;
@@ -73,6 +72,4 @@ public interface CourseService {
   boolean existsById(Long id);
 
   Course validateCourseMembership(String userId, Long courseId);
-
-  User getAuthenticatedUser(String name);
 }

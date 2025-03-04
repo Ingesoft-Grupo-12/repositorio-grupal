@@ -1,7 +1,6 @@
 package com.union.unionbackend.services.courseService;
 
 import com.union.unionbackend.models.Course;
-import com.union.unionbackend.models.User;
 import com.union.unionbackend.repositories.CourseRepository;
 import com.union.unionbackend.repositories.UserRepository;
 import com.union.unionbackend.services.enrollmentService.EnrollmentService;
@@ -75,12 +74,5 @@ public class CourseServiceImp implements CourseService {
     }
 
     return course;
-  }
-
-  @Override
-  public User getAuthenticatedUser(String auth0Id) {
-    return userRepository.findById(auth0Id)
-        .orElseThrow(
-            () -> new IllegalArgumentException("Usuario no encontrado con ID: " + auth0Id));
   }
 }
