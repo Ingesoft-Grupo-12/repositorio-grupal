@@ -6,76 +6,98 @@ import com.union.unionbackend.models.Role;
 import com.union.unionbackend.models.User;
 import com.union.unionbackend.repositories.UserRepository;
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.stereotype.Service;
+
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.List;
 import java.util.Optional;
-import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.oauth2.jwt.Jwt;
-import org.springframework.stereotype.Service;
 
-/**
- * Implementación de la interfaz UserService.
- */
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
   private final UserRepository userRepository;
+
   @Value("${spring.security.oauth2.resourceserver.jwt.issuer-uri}")
   private String apiUrl;
 
   @Override
   public List<User> getAllUsers() {
-    return List.of();
+    return userRepository.findAll();
   }
 
   @Override
   public List<User> getUsersByRole(String role) {
-    return List.of();
+    return userRepository.findAll().stream()
+        .filter(user -> user.getRole().name().equalsIgnoreCase(role))
+        .toList();
   }
 
   @Override
   public User getUserById(String userId) {
-    return userRepository.findById(userId).orElseThrow();
+    return userRepository.findById(userId)
+        .orElseThrow(() -> new RuntimeException("User not found with ID: " + userId));
   }
 
   @Override
   public Optional<User> getUserByEmail(String email) {
-    return Optional.empty();
+    return userRepository.findAll().stream()
+        .filter(user -> user.getEmail().equalsIgnoreCase(email))
+        .findFirst();
   }
 
   @Override
   public User createUser(User user) {
-    return null;
+    if (userRepository.existsById(user.getId())) {
+      throw new RuntimeException("User already exists with ID: " + user.getId());
+    }
+    return userRepository.save(user);
   }
 
   @Override
-  public Optional<User> updateUser(Long userId, User user) {
-    return Optional.empty();
+  public Optional<User> updateUser(String userId, User updatedUser) {
+    return userRepository.findById(userId).map(existingUser -> {
+      existingUser.setUsername(updatedUser.getUsername());
+      existingUser.setEmail(updatedUser.getEmail());
+      existingUser.setRole(updatedUser.getRole());
+      return userRepository.save(existingUser);
+    });
   }
 
   @Override
-  public boolean deleteUser(Long userId) {
-    return false;
+  public boolean deleteUser(String userId) {
+    if (!userRepository.existsById(userId)) {
+      return false;
+    }
+    userRepository.deleteById(userId);
+    return true;
   }
 
   @Override
-  public Optional<User> changeUserRole(Long userId, String newRole) {
-    return Optional.empty();
+  public Optional<User> changeUserRole(String userId, String newRole) {
+    return userRepository.findById(userId).map(user -> {
+      user.setRole(Role.valueOf(newRole.toUpperCase()));
+      return userRepository.save(user);
+    });
   }
 
   @Override
   public List<User> searchUsers(String query) {
-    return List.of();
+    return userRepository.findAll().stream()
+        .filter(user -> user.getUsername().toLowerCase().contains(query.toLowerCase()) ||
+            user.getEmail().toLowerCase().contains(query.toLowerCase()))
+        .toList();
   }
 
   @Override
   public boolean existsById(String id) {
-    return false;
+    return userRepository.existsById(id);
   }
 
   @Transactional
@@ -84,14 +106,14 @@ public class UserServiceImpl implements UserService {
     return userRepository.findById(auth0Id)
         .map(existingUser -> {
           existingUser.setEmail(email);
-          existingUser.setName(name);
+          existingUser.setUsername(name);
           return userRepository.save(existingUser);
         })
         .orElseGet(() -> {
           User newUser = new User();
           newUser.setId(auth0Id);
           newUser.setEmail(email);
-          newUser.setName(name);
+          newUser.setUsername(name);
           newUser.setRole(Role.STUDENT); // Rol por defecto
           return userRepository.save(newUser);
         });
@@ -100,7 +122,7 @@ public class UserServiceImpl implements UserService {
   @Override
   public User getOrCreateUser(Jwt jwt) {
     AuthUserInfo info = getWithBearerToken(jwt.getTokenValue());
-    String auth0Id = jwt.getSubject();  // Obtiene el "sub" del token (Auth0 User ID)
+    String auth0Id = jwt.getSubject();
     String email = info.getEmail();
     String name = info.getName();
 
@@ -109,8 +131,8 @@ public class UserServiceImpl implements UserService {
           User newUser = new User();
           newUser.setId(auth0Id);
           newUser.setEmail(email);
-          newUser.setName(name);
-          newUser.setRole(Role.STUDENT); // Rol por defecto
+          newUser.setUsername(name);
+          newUser.setRole(Role.STUDENT);
           return userRepository.save(newUser);
         });
   }
@@ -119,24 +141,16 @@ public class UserServiceImpl implements UserService {
   public AuthUserInfo getWithBearerToken(String token) {
     HttpURLConnection connection = null;
     try {
-      // Crear y configurar la conexión
       URL url = new URL(apiUrl + "userinfo");
       connection = (HttpURLConnection) url.openConnection();
-
-      // Configurar método y headers
       connection.setRequestMethod("GET");
       connection.setRequestProperty("Authorization", "Bearer " + token);
       connection.setRequestProperty("Content-Type", "application/json");
       connection.setRequestProperty("Accept", "application/json");
 
-      // Obtener respuesta
       int responseCode = connection.getResponseCode();
       if (responseCode == HttpURLConnection.HTTP_OK) {
-        // Leer respuesta
-        BufferedReader reader = new BufferedReader(
-            new InputStreamReader(connection.getInputStream()));
-
-        // Convertir JSON a objeto
+        BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
         ObjectMapper mapper = new ObjectMapper();
         return mapper.readValue(reader, AuthUserInfo.class);
       } else {

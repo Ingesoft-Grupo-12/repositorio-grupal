@@ -1,9 +1,12 @@
 package com.union.unionbackend.services.enrollmentService;
 
-import com.union.unionbackend.models.Enrollment;
+import com.union.unionbackend.dtos.EnrollmentDto;
+import org.springframework.stereotype.Service;
+
 import java.util.List;
 import java.util.Optional;
 
+@Service
 public interface EnrollmentService {
 
   /**
@@ -13,7 +16,7 @@ public interface EnrollmentService {
    * @param studentId ID del estudiante.
    * @return Un Optional con la inscripción creada si la operación fue exitosa.
    */
-  Optional<Enrollment> enrollStudent(Long courseId, Long studentId);
+  Optional<EnrollmentDto> enrollStudent(Long courseId, String studentId);
 
   /**
    * Obtiene una inscripción por su ID.
@@ -21,7 +24,7 @@ public interface EnrollmentService {
    * @param enrollmentId ID de la inscripción.
    * @return Un Optional con la inscripción si se encuentra.
    */
-  Optional<Enrollment> getEnrollment(Long enrollmentId);
+  Optional<EnrollmentDto> getEnrollment(Long enrollmentId);
 
   /**
    * Desinscribe a un estudiante de un curso.
@@ -37,7 +40,7 @@ public interface EnrollmentService {
    * @param courseId ID del curso.
    * @return Lista de inscripciones asociadas al curso.
    */
-  List<Enrollment> getEnrollmentsByCourse(Long courseId);
+  List<EnrollmentDto> getEnrollmentsByCourse(Long courseId);
 
   /**
    * Obtiene todos los cursos en los que un estudiante está inscrito.
@@ -45,7 +48,7 @@ public interface EnrollmentService {
    * @param studentId ID del estudiante.
    * @return Lista de inscripciones asociadas al estudiante.
    */
-  List<Enrollment> getEnrollmentsByStudent(Long studentId);
+  List<EnrollmentDto> getEnrollmentsByStudent(String studentId);
 
   /**
    * Verifica si un estudiante está inscrito en un curso.

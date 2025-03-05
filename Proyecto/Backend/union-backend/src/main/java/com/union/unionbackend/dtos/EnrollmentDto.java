@@ -1,5 +1,6 @@
 package com.union.unionbackend.dtos;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 /**
@@ -7,9 +8,11 @@ import lombok.Data;
  * its ID, course ID, and student ID.
  */
 @Data
+@AllArgsConstructor
 public class EnrollmentDto {
 
   private Long id;
   private Long courseId;
-  private Long studentId;
+  private String studentId;
+
 }

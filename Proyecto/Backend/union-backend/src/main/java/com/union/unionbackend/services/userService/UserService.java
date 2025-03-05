@@ -60,7 +60,7 @@ public interface UserService {
    * @param user   Los nuevos datos del usuario.
    * @return Un Optional con el usuario actualizado si la operación fue exitosa.
    */
-  Optional<User> updateUser(Long userId, User user);
+  Optional<User> updateUser(String userId, User user); // 🔹 Se cambió Long -> String
 
   /**
    * Elimina un usuario por su ID.
@@ -68,7 +68,7 @@ public interface UserService {
    * @param userId El ID del usuario a eliminar.
    * @return true si el usuario fue eliminado exitosamente, false en caso contrario.
    */
-  boolean deleteUser(Long userId);
+  boolean deleteUser(String userId); // 🔹 Se cambió Long -> String
 
   /**
    * Cambia el rol de un usuario.
@@ -77,7 +77,7 @@ public interface UserService {
    * @param newRole El nuevo rol a asignar.
    * @return Un Optional con el usuario actualizado si la operación fue exitosa.
    */
-  Optional<User> changeUserRole(Long userId, String newRole);
+  Optional<User> changeUserRole(String userId, String newRole); // 🔹 Se cambió Long -> String
 
   /**
    * Busca usuarios en la plataforma por nombre o correo.

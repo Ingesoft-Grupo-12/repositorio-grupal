@@ -1,16 +1,19 @@
 package com.union.unionbackend.dtos;
 
 import lombok.Data;
+import jakarta.validation.constraints.NotBlank;
 
-/**
- * Data Transfer Object (DTO) for users. Contains information about a user, including their ID,
- * username, email, and role.
- */
 @Data
 public class UserDto {
 
-  private Long id;
+  private String id;
+
+  @NotBlank(message = "Username cannot be blank")
   private String username;
+
+  @NotBlank(message = "Email cannot be blank")
   private String email;
+
+  @NotBlank(message = "Role cannot be blank")
   private String role;
 }

@@ -40,7 +40,7 @@ public class User {
 
   @NotBlank
   @Column(nullable = false)
-  private String name;
+  private String username;
 
   @Enumerated(EnumType.STRING)
   @Column(nullable = false)
