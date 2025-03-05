@@ -7,8 +7,8 @@ import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
 
 /**
- * Configuration class for WebSocket message broker.
- * Enables WebSocket message handling, backed by a message broker.
+ * Configuration class for WebSocket message broker. Enables WebSocket message handling, backed by a
+ * message broker.
  */
 @Configuration
 @EnableWebSocketMessageBroker
@@ -21,7 +21,9 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
    */
   @Override
   public void registerStompEndpoints(StompEndpointRegistry registry) {
-    registry.addEndpoint("/ws").setAllowedOrigins("*").withSockJS();
+    registry.addEndpoint("/ws").setAllowedOrigins("http://localhost:3000",
+            "http://localhost:3001")
+        .withSockJS();
   }
 
   /**

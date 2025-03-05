@@ -2,20 +2,21 @@ package com.union.unionbackend.services.courseService;
 
 import com.union.unionbackend.models.Course;
 import com.union.unionbackend.repositories.CourseRepository;
+import com.union.unionbackend.repositories.UserRepository;
+import com.union.unionbackend.services.enrollmentService.EnrollmentService;
 import java.io.File;
 import java.util.List;
 import java.util.Optional;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class CourseServiceImp implements CourseService {
 
   private final CourseRepository courseRepository;
-
-  public CourseServiceImp(CourseRepository courseRepository) {
-    this.courseRepository = courseRepository;
-  }
-
+  private final EnrollmentService enrollmentService;
+  private final UserRepository userRepository;
 
   @Override
   public Course createCourse(Course course) {
@@ -58,5 +59,20 @@ public class CourseServiceImp implements CourseService {
       throw new IllegalArgumentException("ID cannot be null");
     }
     return courseRepository.existsById(id);
+  }
+
+  @Override
+  public Course validateCourseMembership(String userId, Long courseId) {
+    Course course = courseRepository.findById(courseId)
+        .orElseThrow(() -> new IllegalArgumentException("Curso no encontrado"));
+
+    boolean isTeacher = course.getTeacher().getId().equals(userId);
+    boolean isEnrolled = enrollmentService.existsByStudentIdAndCourseId(userId, courseId);
+
+    if (!isTeacher && !isEnrolled) {
+      throw new SecurityException("No tienes acceso a este chat");
+    }
+
+    return course;
   }
 }

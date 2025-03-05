@@ -3,9 +3,7 @@ package com.union.unionbackend.services.announcementService;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-import com.union.unionbackend.models.Announcement;
 import com.union.unionbackend.models.Course;
-import com.union.unionbackend.repositories.AnnouncementRepository;
 import com.union.unionbackend.services.courseService.CourseService;
 import jakarta.persistence.EntityNotFoundException;
 import java.util.Arrays;

@@ -46,4 +46,13 @@ public interface EnrollmentService {
    * @return Lista de inscripciones asociadas al estudiante.
    */
   List<Enrollment> getEnrollmentsByStudent(Long studentId);
+
+  /**
+   * Verifica si un estudiante está inscrito en un curso.
+   *
+   * @param studentId ID del estudiante.
+   * @param courseId  ID del curso.
+   * @return true si el estudiante está inscrito en el curso, false en caso contrario.
+   */
+  boolean existsByStudentIdAndCourseId(String studentId, Long courseId);
 }

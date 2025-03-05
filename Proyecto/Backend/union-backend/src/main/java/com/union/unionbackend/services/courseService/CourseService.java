@@ -70,4 +70,6 @@ public interface CourseService {
    * @return true si el curso existe, false en caso contrario.
    */
   boolean existsById(Long id);
+
+  Course validateCourseMembership(String userId, Long courseId);
 }
