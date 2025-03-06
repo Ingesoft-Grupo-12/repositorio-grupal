@@ -13,4 +13,5 @@ public class CourseWithLastMessageDto {
   private String courseDescription;
   private String lastMessageContent;
   private LocalDateTime lastMessageTime;
+  private String lastMessageSenderName;
 }

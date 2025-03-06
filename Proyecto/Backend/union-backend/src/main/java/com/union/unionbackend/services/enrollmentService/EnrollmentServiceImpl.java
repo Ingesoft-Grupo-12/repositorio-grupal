@@ -101,9 +101,11 @@ public class EnrollmentServiceImpl implements EnrollmentService {
               course.getName(),
               course.getDescription(),
               lastMessage != null ? lastMessage.getContent() : "No messages yet",
-              lastMessage != null ? lastMessage.getSentAt() : null
+              lastMessage != null ? lastMessage.getSentAt() : null,
+              lastMessage != null && lastMessage.getSender() != null ? lastMessage.getSender().getUsername() : "Unknown" // 🔹 Obtener el nombre del remitente
           );
         })
         .collect(Collectors.toList());
   }
+
 }
