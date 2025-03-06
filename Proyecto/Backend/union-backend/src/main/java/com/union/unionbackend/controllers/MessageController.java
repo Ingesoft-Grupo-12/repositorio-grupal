@@ -1,5 +1,6 @@
 package com.union.unionbackend.controllers;
 
+import com.union.unionbackend.dtos.MessageDto;
 import com.union.unionbackend.models.Course;
 import com.union.unionbackend.models.Message;
 import com.union.unionbackend.models.User;
@@ -34,7 +35,7 @@ public class MessageController {
   private final UserService userService;
 
   @GetMapping
-  public ResponseEntity<List<Message>> getMessages(
+  public ResponseEntity<List<MessageDto>> getMessages(
       @PathVariable Long courseId,
       @RequestParam(defaultValue = "0") int page,
       @RequestParam(defaultValue = "50") int size,
@@ -48,6 +49,20 @@ public class MessageController {
     Pageable pageable = PageRequest.of(page, size, Sort.by("sentAt").descending());
     Page<Message> messages = messageRepository.findByCourseId(courseId, pageable);
 
-    return ResponseEntity.ok(messages.getContent());
+    // Convertir `Message` a `MessageDto`
+    List<MessageDto> messageDtos = messages.getContent().stream()
+        .map(message -> new MessageDto(
+            message.getId(),
+            message.getSender().getId(),
+            message.getSender().getUsername(),
+            message.getSender().getUserimage(),
+            message.getContent(),
+            message.getSentAt(),
+            courseId
+        ))
+        .toList();
+
+    return ResponseEntity.ok(messageDtos);
   }
+
 }
