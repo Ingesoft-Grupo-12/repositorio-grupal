@@ -4,22 +4,23 @@ import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import { format, isToday, isThisWeek } from "date-fns";
 import { es } from "date-fns/locale";
+import DefaultAvatar from "@/assets/images/default-avatar.svg";
 
 type CourseCardProps = {
   courseId: number;
-  courseImage: string;
+  courseCode: string;
   courseName: string;
-  lastUserName: string;
-  lastMessage: string;
+  courseDescription: string;
+  lastMessageSenderName: string;
+  lastMessageContent: string;
   lastMessageTime: string;
 };
 
 export default function CourseCard({
   courseId,
-  courseImage,
   courseName,
-  lastUserName,
-  lastMessage,
+  lastMessageSenderName,
+  lastMessageContent,
   lastMessageTime,
 }: CourseCardProps) {
   const lastMessageDate = new Date(lastMessageTime);
@@ -54,9 +55,20 @@ export default function CourseCard({
     };
   }, []);
 
-  const handleDeleteClick = (event: React.MouseEvent) => {
+  const handleDeleteClick = async (event: React.MouseEvent) => {
     event.stopPropagation();
-    console.log("API-Eliminar Curso", courseId);
+    try {
+      const res = await fetch(`/api/courses/${courseId}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (!res.ok) throw new Error("Error al buscar cursos");
+    } catch (error) {
+      console.error("Error:", error);
+    }
     setMenuOpen(false);
   };
 
@@ -64,7 +76,7 @@ export default function CourseCard({
     <div className="relative" onContextMenu={handleContextMenu}>
       <div className="flex items-center p-4 cursor-pointer hover:bg-gray-100">
         <Image
-          src={courseImage}
+          src={DefaultAvatar}
           width={48}
           height={48}
           alt={`${courseName}'s avatar`}
@@ -73,7 +85,7 @@ export default function CourseCard({
         <div className="ml-4 flex-grow min-w-0">
           <div className="font-medium truncate">{courseName}</div>
           <div className="text-sm text-gray-400 truncate">
-            {"~" + lastUserName + ": " + lastMessage}
+            {"~" + lastMessageSenderName + ": " + lastMessageContent}
           </div>
         </div>
         <div className="text-xs text-gray-500 flex-shrink-0 whitespace-nowrap">

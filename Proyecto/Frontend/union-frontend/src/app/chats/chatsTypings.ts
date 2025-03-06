@@ -14,18 +14,21 @@ export type MessageType = {
 };
 
 export type UserType = {
-  userId: number;
-  userImage: string;
-  userName: string;
-  userEmail: string;
-  requestStatus: string;
+  id: string;
+  userimage: string;
+  username: string;
+  email: string;
+  role: string;
 };
 
 export type CourseMessageType = {
-  messageId: number;
-  user: UserType;
+  id: number;
+  senderId: string;
+  courseId: number;
+  senderImage: string;
+  senderName: string;
   content: string;
-  time: string;
+  timestamp: string;
 };
 
 export type SelectedChatDataType = {
@@ -36,12 +39,22 @@ export type SelectedChatDataType = {
 
 export type CourseType = {
   courseId: number;
-  courseImage: string;
+  courseCode: string;
   courseName: string;
+  courseDescription: string;
   courseUsers: Array<UserType>;
-  lastUserName: string;
-  lastMessage: string;
+  lastMessageSenderName: string;
+  lastMessageContent: string;
   lastMessageTime: string;
+};
+
+export type CourseDetailsType = {
+  courseId: number;
+  courseCode: string;
+  name: string;
+  description: string;
+  teacherId: string;
+  participants: Array<UserType>;
 };
 
 export type ModuleType = "messages" | "friends" | "courses";

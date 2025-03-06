@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import ChatCard from "./ChatCard/ChatCard";
 import SkeletonChatCard from "./ChatCard/SkeletonChatCard";
-import FriendCard from "./FriendCard/FriendCard";
 import SkeletonFriendCard from "./FriendCard/SkeletonFriendCard";
 import CourseCard from "./CourseCard/CourseCard";
 import SkeletonCourseCard from "./CourseCard/SkeletonCourseCard";
@@ -18,6 +17,7 @@ import { FiSearch } from "react-icons/fi";
 import NewChatModal from "./Modals/NewChatModal";
 import AddFriendModal from "./Modals/AddFriendsModal";
 import NewCourseModal from "./Modals/NewCourseModal";
+import { useUser } from "@auth0/nextjs-auth0/client";
 
 type ChatSidebarProps = {
   selectedModule: ModuleType;
@@ -49,6 +49,7 @@ export default function ChatSidebar({
   const [newChatModalOpen, setNewChatModalOpen] = useState(false);
   const [addFriendModalOpen, setAddFriendModalOpen] = useState(false);
   const [newCourseModalOpen, setNewCourseModalOpen] = useState(false);
+  const { user } = useUser();
 
   useEffect(() => {
     if (selectedModule === "messages") {
@@ -105,14 +106,21 @@ export default function ChatSidebar({
   const fetchCourses = async () => {
     setCoursesLoading(true);
     try {
-      const response = await fetch("http://localhost:3000/api/courses");
-      if (!response.ok) throw new Error("Failed to fetch courses");
-      const data: CourseType[] = await response.json();
-      setSidebarCourses(data);
-    } catch (error) {
-      console.error("Error fetching chats:", error);
-    } finally {
+      const res = await fetch(`/api/courses/${user?.sub}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (!res.ok) throw new Error("Error al buscar cursos");
+
+      const courses = await res.json();
+
+      setSidebarCourses(courses);
       setCoursesLoading(false);
+    } catch (error) {
+      console.error("Error:", error);
     }
   };
 
@@ -122,13 +130,13 @@ export default function ChatSidebar({
 
   const filteredFriends = sidebarFriends.filter(
     (friend) =>
-      friend.userName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      friend.userEmail.toLowerCase().includes(searchQuery.toLowerCase())
+      friend.username.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      friend.email.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  const filteredCourses = sidebarCourses.filter((course) =>
-    course.courseName.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const filteredCourses = sidebarCourses.filter((course) => {
+    return course.courseName.toLowerCase().includes(searchQuery.toLowerCase());
+  });
 
   const renderModuleTitle = (module: ModuleType) => {
     if (module === "messages") {
@@ -179,16 +187,16 @@ export default function ChatSidebar({
       );
 
     return filteredFriends.map((friend) => {
-      const isSelected = selectedFriend?.userId === friend.userId;
+      const isSelected = selectedFriend?.id === friend.id;
       return (
         <div
-          key={friend.userId}
+          key={friend.id}
           className={`cursor-pointer ${
             isSelected ? "bg-gray-100" : "hover:bg-gray-100"
           }`}
           onClick={() => setSelectedFriend(friend)}
         >
-          <FriendCard {...friend} />
+          {/* <FriendCard {...friend} /> */}
         </div>
       );
     });
@@ -253,7 +261,6 @@ export default function ChatSidebar({
           onClick={() => {
             if (selectedModule === "messages") {
               setNewChatModalOpen(!newChatModalOpen);
-              console.log("Crear nuevo chat");
             } else if (selectedModule === "friends") {
               setAddFriendModalOpen(!addFriendModalOpen);
             } else if (selectedModule === "courses") {

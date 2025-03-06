@@ -19,7 +19,7 @@ type IconType = React.ComponentType<{ size?: number; className?: string }>;
 
 const menuItems: { module: ModuleType; icon: IconType }[] = [
   { module: "messages", icon: LuMessageSquareMore },
-  { module: "friends", icon: FaUserFriends },
+  // { module: "friends", icon: FaUserFriends },
   { module: "courses", icon: MdGroups },
 ];
 

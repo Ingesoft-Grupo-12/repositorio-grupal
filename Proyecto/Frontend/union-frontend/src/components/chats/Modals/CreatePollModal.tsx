@@ -83,7 +83,6 @@ export default function CreatePollModal({
       allowMultiple,
       maxDateTime: maxDateTime || null,
     };
-    console.log("Encuesta creada:", pollData);
     handleClose();
   };
 

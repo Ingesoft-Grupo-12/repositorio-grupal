@@ -7,11 +7,10 @@ export async function GET() {
     console.log(accessToken)
     return NextResponse.json({ accessToken });
   } catch (error) {
+    console.error(error)
     return NextResponse.json(
       { error: "No se pudo obtener el token" },
       { status: 401 }
     );
   }
 }
-
-

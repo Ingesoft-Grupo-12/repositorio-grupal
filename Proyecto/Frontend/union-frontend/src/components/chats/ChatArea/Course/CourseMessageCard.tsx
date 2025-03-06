@@ -1,10 +1,10 @@
 "use client";
 
 import Image from "next/image";
-import { UserType } from "@/app/chats/chatsTypings";
 
 type CourseMessageCardProps = {
-  user: UserType;
+  senderName: string;
+  senderImage: string;
   message: string;
   time: string;
   isCurrentUser: boolean;
@@ -12,7 +12,8 @@ type CourseMessageCardProps = {
 };
 
 export default function CourseMessageCard({
-  user,
+  senderName,
+  senderImage,
   message,
   time,
   isCurrentUser,
@@ -25,8 +26,8 @@ export default function CourseMessageCard({
       <div className="w-10 h-10 mr-2 flex-shrink-0">
         {!isCurrentUser && showUserInfo && (
           <Image
-            src={user.userImage}
-            alt={user.userName}
+            src={senderImage}
+            alt={senderName}
             width={40}
             height={40}
             className="rounded-full"
@@ -43,7 +44,7 @@ export default function CourseMessageCard({
           }`}
         >
           {!isCurrentUser && showUserInfo && (
-            <span className="text-sm font-semibold">{user.userName}</span>
+            <span className="text-sm font-semibold">{senderName}</span>
           )}
           <p>{message}</p>
           <span className="block text-xs text-gray-500 text-right mt-1">

@@ -2,32 +2,31 @@
 
 import Image from "next/image";
 
-import { UserType } from "@/app/chats/chatsTypings";
-
 type CourseHeaderProps = {
-  courseName: string;
+  name: string;
   courseImage: string;
-  courseUsers: Array<UserType>;
+  description: string;
 };
 
 export default function CourseHeader({
-  courseName,
+  name,
   courseImage,
-  courseUsers,
+  description,
 }: CourseHeaderProps) {
   return (
     <div className="flex items-center bg-white p-4 shado">
       <Image
         src={courseImage}
-        alt={courseName || "User avatar"}
+        alt={name || "User avatar"}
         width={40}
         height={40}
         className="rounded-full"
       />
       <div className="flex flex-col ml-4 truncate">
-        <span className="text-lg">{courseName}</span>
+        <span className="text-lg">{name}</span>
         <span className="text-sm text-gray-500 overflow-hidden whitespace-nowrap text-ellipsis max-w-full">
-          {courseUsers.map((user) => user.userName).join(", ")}
+          {/* {courseParticipants.map((user) => user.username).join(", ")} */}
+          {description}
         </span>
         {/* <span className="text-sm text-green-500">escribiendo..</span> */}
       </div>

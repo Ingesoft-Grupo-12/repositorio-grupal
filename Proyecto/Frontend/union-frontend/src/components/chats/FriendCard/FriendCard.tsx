@@ -41,7 +41,6 @@ export default function FriendChatCard({
 
   const handleDeleteClick = (event: React.MouseEvent) => {
     event.stopPropagation();
-    console.log("API-Eliminar Amigo", userId);
     setMenuOpen(false);
   };
 

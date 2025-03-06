@@ -13,9 +13,12 @@ import {
   ModuleType,
   UserType,
   CourseMessageType,
+  CourseDetailsType,
 } from "@/app/chats/chatsTypings";
 import SockJS from "sockjs-client";
 import { Client } from "@stomp/stompjs";
+import DefaultAvatar from "@/assets/images/default-avatar.svg";
+import { useUser } from "@auth0/nextjs-auth0/client";
 
 type ChatAreaProps = {
   selectedModule: ModuleType;
@@ -33,10 +36,12 @@ export default function ChatArea({
   const [chatMessages, setChatMessages] = useState<MessageType[]>([]);
   const [courseMessages, setCourseMessages] = useState<CourseMessageType[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
-  const [userId, setUserId] = useState<number | null>(null);
   const [stompClient, setStompClient] = useState<Client | null>(null);
   const [isConnected, setIsConnected] = useState(false);
+  const [selectedCourseDetails, setSelectedCourseDetails] =
+    useState<CourseDetailsType>();
   const [input, setInput] = useState("");
+  const { user } = useUser();
 
   useEffect(() => {
     const token = "";
@@ -82,10 +87,34 @@ export default function ChatArea({
     };
   }, [selectedCourse?.courseId]);
 
+  const fetchCourseDetails = async () => {
+    setLoading(true);
+    try {
+      const res = await fetch(
+        `/api/coursesDetails/${selectedCourse?.courseId}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (!res.ok) throw new Error("Error al buscar cursos");
+
+      const courseDetails = await res.json();
+
+      setSelectedCourseDetails(courseDetails);
+      setLoading(false);
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
+
   const sendMessage = () => {
     if (stompClient && stompClient.connected) {
       const token = "";
-      const senderId = userId;
+      const senderId = user?.sub;
       // Se construye el payload incluyendo el contenido y el id del sender
       const payload = { content: input, senderId };
       stompClient.publish({
@@ -101,32 +130,15 @@ export default function ChatArea({
   };
 
   useEffect(() => {
-    fetchUserId();
-  }, []);
-
-  useEffect(() => {
-    if (userId) {
+    if (user?.sub) {
       if (selectedChat) {
         fetchMessages();
       } else if (selectedCourse) {
+        fetchCourseDetails();
         fetchCourseMessages();
       }
     }
-  }, [selectedChat, selectedCourse, userId]);
-
-  const fetchUserId = async () => {
-    setLoading(true);
-    try {
-      const response = await fetch("http://localhost:3000/api/me");
-      if (!response.ok) throw new Error("Error al obtener usuario");
-      const data = await response.json();
-      setUserId(data[0].userId);
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setLoading(false);
-    }
-  };
+  }, [selectedChat, selectedCourse]);
 
   const fetchMessages = async () => {
     setLoading(true);
@@ -145,14 +157,24 @@ export default function ChatArea({
   const fetchCourseMessages = async () => {
     setLoading(true);
     try {
-      const response = await fetch("http://localhost:3000/api/messages/course");
-      if (!response.ok) throw new Error("Error al cargar mensajes");
-      const data: CourseMessageType[] = await response.json();
-      setCourseMessages(data);
-    } catch (error) {
-      console.error(error);
-    } finally {
+      const res = await fetch(
+        `/api/messages/course/${selectedCourse?.courseId}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (!res.ok) throw new Error("Error al obtener mensajes del curso");
+
+      const messages = await res.json();
+
+      setCourseMessages(messages);
       setLoading(false);
+    } catch (error) {
+      console.error("Error:", error);
     }
   };
 
@@ -193,28 +215,37 @@ export default function ChatArea({
         {loading ? (
           <p className="text-gray-500 text-center">Cargando mensajes...</p>
         ) : (
-          <ChatBody chatMessages={chatMessages} userId={userId} />
+          <ChatBody chatMessages={chatMessages} userId={user?.sub} />
         )}
         <div className="mt-auto">
-          <ChatBox onSendMessage={sendMessage} />
+          {/* <ChatBox onSendMessage={sendMessage} /> */}
         </div>
       </div>
     );
   } else if (selectedCourse) {
     return (
       <div className="flex flex-col ml-2 bg-white p-4 rounded-xl w-full min-w-96 h-full">
-        <CourseHeader
-          courseName={selectedCourse.courseName}
-          courseImage={selectedCourse.courseImage}
-          courseUsers={selectedCourse.courseUsers}
-        />
+        {selectedCourseDetails && (
+          <CourseHeader
+            name={selectedCourseDetails.name}
+            description={selectedCourseDetails.description}
+            courseImage={DefaultAvatar}
+          />
+        )}
         {loading ? (
           <p className="text-gray-500 text-center">Cargando mensajes...</p>
         ) : (
-          <CourseBody courseMessages={courseMessages} userId={userId!} />
+          <CourseBody
+            courseMessages={courseMessages}
+            userId={user?.sub ?? null}
+          />
         )}
         <div className="mt-auto">
-          <ChatBox onSendMessage={sendMessage} />
+          <ChatBox
+            onSendMessage={sendMessage}
+            input={input}
+            setInput={setInput}
+          />
         </div>
       </div>
     );

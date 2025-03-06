@@ -19,13 +19,12 @@ export async function GET() {
       },
     });
 
-    console.log(res);
-
     if (!res.ok) {
       throw new Error(`Error en la API externa: ${res.statusText}`);
     }
 
     const users = await res.json();
+
     return NextResponse.json(users);
   } catch (error) {
     if (error instanceof Error) {
@@ -46,7 +45,13 @@ export async function POST(req: Request) {
 
     const body = await req.json();
 
-    if (!body.id || !body.username || !body.email || !body.role) {
+    if (
+      !body.id ||
+      !body.username ||
+      !body.userimage ||
+      !body.email ||
+      !body.role
+    ) {
       return NextResponse.json(
         { error: "Faltan datos requeridos en la petición." },
         { status: 400 }

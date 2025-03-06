@@ -7,7 +7,7 @@ import { es } from "date-fns/locale";
 
 type CourseBodyProps = {
   courseMessages: CourseMessageType[];
-  userId: number | null;
+  userId: string | null;
 };
 
 const getDateLabel = (date: Date) => {
@@ -27,7 +27,7 @@ export default function CourseBody({
   userId,
 }: CourseBodyProps) {
   let lastDateLabel = "";
-  let lastUserId: number | null = null;
+  let lastUserId: string | null = null;
 
   return (
     <div className="flex flex-col justify-start bg-gray-200  p-4 rounded-md h-full overflow-y-auto">
@@ -36,26 +36,27 @@ export default function CourseBody({
           <p className="text-gray-500 text-center">No hay mensajes</p>
         ) : (
           courseMessages.map((msg) => {
-            const messageDate = new Date(msg.time);
+            const messageDate = new Date(msg.timestamp);
             const dateLabel = getDateLabel(messageDate);
             const showDateLabel = dateLabel !== lastDateLabel;
-            const showUserInfo = lastUserId !== msg.user.userId;
+            const showUserInfo = lastUserId !== msg.senderId;
 
             lastDateLabel = dateLabel;
-            lastUserId = msg.user.userId;
+            lastUserId = msg.senderId;
 
             return (
-              <div key={msg.messageId}>
+              <div key={msg.id}>
                 {showDateLabel && (
                   <div className="text-center text-gray-600 text-sm font-semibold my-2">
                     {dateLabel}
                   </div>
                 )}
                 <CourseMessageCard
-                  user={msg.user}
+                  senderName={msg.senderName}
+                  senderImage={msg.senderImage}
                   message={msg.content}
                   time={formatTime(messageDate)}
-                  isCurrentUser={userId === msg.user.userId}
+                  isCurrentUser={userId === msg.senderId}
                   showUserInfo={showUserInfo}
                 />
               </div>

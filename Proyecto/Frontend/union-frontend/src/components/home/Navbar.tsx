@@ -21,6 +21,7 @@ export default function Navbar() {
         const newUser = {
           id: user.sub,
           username: user.name,
+          userimage: user.picture,
           email: user.email,
           role: "STUDENT",
         };
@@ -36,7 +37,6 @@ export default function Navbar() {
         if (!res.ok) throw new Error("Error al crear el usuario");
 
         const createdUser = await res.json();
-        console.log("Usuario creado:", createdUser);
       } catch (error) {
         console.error("Error:", error);
       }

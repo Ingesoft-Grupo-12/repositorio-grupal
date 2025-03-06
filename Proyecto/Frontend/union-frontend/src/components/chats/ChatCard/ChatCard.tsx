@@ -54,7 +54,6 @@ export default function ChatCard({
 
   const handleDeleteClick = (event: React.MouseEvent) => {
     event.stopPropagation();
-    console.log("API-Eliminar Chat", userId);
     setMenuOpen(false);
   };
 

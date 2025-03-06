@@ -5,6 +5,7 @@ import ReactPortal from "@/components/shared/ReactPortal";
 import { FiSearch } from "react-icons/fi";
 import UserCard from "@/components/chats/UserCard/UserCard";
 import { UserType } from "@/app/chats/chatsTypings";
+import { useUser } from "@auth0/nextjs-auth0/client";
 
 type NewCourseModalProps = {
   isOpen: boolean;
@@ -16,6 +17,7 @@ export default function NewCourseModal({
   handleClose,
 }: NewCourseModalProps) {
   const [courseName, setCourseName] = useState("");
+  const [courseCode, setCourseCode] = useState("");
   const [courseDescription, setCourseDescription] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const [tempSearchQuery, setTempSearchQuery] = useState("");
@@ -23,6 +25,7 @@ export default function NewCourseModal({
   const [selectedUsers, setSelectedUsers] = useState<UserType[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const { user } = useUser();
 
   useEffect(() => {
     const debounceTimeout = setTimeout(() => {
@@ -38,19 +41,42 @@ export default function NewCourseModal({
     }
 
     setLoading(true);
-    fetch(`/api/users`)
-      // fetch(`/api/users?query=${searchQuery}`)
-      .then((res) => res.json())
-      .then((data) => {
-        setSearchResults(data);
-      })
-      .catch((err) => console.error("Error fetching users:", err))
-      .finally(() => setLoading(false));
-  }, [searchQuery]);
+
+    const fetchUsers = async () => {
+      try {
+        const res = await fetch("/api/users", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+
+        if (!res.ok) throw new Error("Error al buscar usuarios");
+
+        const users = await res.json();
+
+        const filteredUsers = users.data.filter(
+          (u: UserType) => u.id !== user?.sub
+        );
+
+        setSearchResults(filteredUsers);
+        setLoading(false);
+      } catch (error) {
+        console.error("Error:", error);
+      }
+    };
+
+    fetchUsers();
+  }, [searchQuery, user?.sub]);
 
   const validateCourse = () => {
     if (courseName.trim() === "") {
       setError("El curso debe tener un nombre.");
+      return false;
+    }
+
+    if (courseCode.trim() === "") {
+      setError("El curso debe tener un codigo.");
       return false;
     }
 
@@ -64,25 +90,51 @@ export default function NewCourseModal({
   };
 
   const handleUserSelect = (user: UserType) => {
-    if (!selectedUsers.some((u) => u.userId === user.userId)) {
+    if (!selectedUsers.some((user) => user.id === user.id)) {
       setSelectedUsers([...selectedUsers, user]);
     }
   };
 
-  const handleUserRemove = (userId: number) => {
-    setSelectedUsers(selectedUsers.filter((user) => user.userId !== userId));
+  const handleUserRemove = (userId: string) => {
+    setSelectedUsers(selectedUsers.filter((user) => user.id !== userId));
   };
 
-  const handleCreateCourse = () => {
+  const handleCreateCourse = async () => {
     if (!validateCourse()) {
       return;
     }
-    console.log("Creating course with:", {
-      courseName,
-      courseDescription,
-      selectedUsers,
-    });
-    handleClose();
+
+    setLoading(true);
+
+    try {
+      const studentIds = selectedUsers
+        .filter((selectedUser) => selectedUser.id !== user?.sub)
+        .map((student) => ({ id: student.id }));
+
+      const newCourse = {
+        code: courseCode,
+        name: courseName,
+        description: courseDescription,
+        teacher: { id: user?.sub },
+        students: studentIds,
+      };
+
+      const res = await fetch(`/api/courses/${user?.sub}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(newCourse),
+      });
+
+      if (!res.ok) throw new Error("Error al crear el curso");
+
+      handleClose();
+    } catch (error) {
+      console.error("Error:", error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   if (!isOpen) return null;
@@ -100,6 +152,14 @@ export default function NewCourseModal({
               ✖
             </button>
           </div>
+
+          <input
+            type="text"
+            placeholder="Codigo"
+            value={courseCode}
+            onChange={(e) => setCourseCode(e.target.value)}
+            className="w-full mb-3 p-2 border border-gray-300 rounded-lg"
+          />
 
           <input
             type="text"
@@ -137,7 +197,7 @@ export default function NewCourseModal({
               <div className="divide-y divide-gray-200">
                 {searchResults.map((user) => (
                   <div
-                    key={user.userId}
+                    key={user.id}
                     className="flex justify-between items-center p-2"
                   >
                     <UserCard {...user} />
@@ -160,12 +220,12 @@ export default function NewCourseModal({
               <ul className="mt-2">
                 {selectedUsers.map((user) => (
                   <li
-                    key={user.userId}
+                    key={user.id}
                     className="flex justify-between items-center p-2 border-b"
                   >
-                    {user.userName}
+                    {user.username}
                     <button
-                      onClick={() => handleUserRemove(user.userId)}
+                      onClick={() => handleUserRemove(user.id)}
                       className="ml-2 text-red-500"
                     >
                       Eliminar

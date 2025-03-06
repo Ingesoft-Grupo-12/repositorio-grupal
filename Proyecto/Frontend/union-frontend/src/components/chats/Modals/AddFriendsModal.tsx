@@ -79,7 +79,7 @@ export default function AddFriendsModal({
               <div className="divide-y divide-gray-200">
                 {searchResults.map((user) => (
                   <div
-                    key={user.userId}
+                    key={user.id}
                     className="flex justify-between items-center p-2"
                   >
                     <AddFriendCard {...user} />

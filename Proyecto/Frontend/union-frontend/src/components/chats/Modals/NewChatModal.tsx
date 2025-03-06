@@ -14,11 +14,11 @@ type NewChatModalProps = {
 
 export default function NewChatModal({
   isOpen,
-  setSelectedChat,
+  // setSelectedChat,
   handleClose,
 }: NewChatModalProps) {
   const [friendsLoading, setFriendsLoading] = useState(false);
-  const [friends, setFriends] = useState<UserType[]>([]);
+  // const [friends, setFriends] = useState<UserType[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
@@ -41,24 +41,24 @@ export default function NewChatModal({
     }
   };
 
-  const filteredFriends = friends.filter(
-    (friend) =>
-      friend.userName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      friend.userEmail.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  // const filteredFriends = friends.filter(
+  //   (friend) =>
+  //     friend.userName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+  //     friend.userEmail.toLowerCase().includes(searchQuery.toLowerCase())
+  // );
 
-  const handleSelectFriend = (friend: UserType) => {
-    const chatData: ChatDataType = {
-      userId: friend.userId,
-      userImage: friend.userImage,
-      userName: friend.userName,
-      lastMessage: "",
-      lastMessageTime: "",
-    };
+  // const handleSelectFriend = (friend: UserType) => {
+  //   const chatData: ChatDataType = {
+  //     userId: friend.userId,
+  //     userImage: friend.userImage,
+  //     userName: friend.userName,
+  //     lastMessage: "",
+  //     lastMessageTime: "",
+  //   };
 
-    setSelectedChat(chatData);
-    handleClose();
-  };
+  //   setSelectedChat(chatData);
+  //   handleClose();
+  // };
 
   return (
     <ReactPortal wrapperId="react-portal-modal-container">
