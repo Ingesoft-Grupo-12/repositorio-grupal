@@ -1,5 +1,6 @@
 package com.union.unionbackend.services.enrollmentService;
 
+import com.union.unionbackend.dtos.CourseWithLastMessageDto;
 import com.union.unionbackend.dtos.EnrollmentDto;
 import org.springframework.stereotype.Service;
 
@@ -58,4 +59,6 @@ public interface EnrollmentService {
    * @return true si el estudiante está inscrito en el curso, false en caso contrario.
    */
   boolean existsByStudentIdAndCourseId(String studentId, Long courseId);
+
+  List<CourseWithLastMessageDto> getEnrolledCoursesWithLastMessage(String studentId);
 }

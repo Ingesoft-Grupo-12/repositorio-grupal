@@ -1,5 +1,6 @@
 package com.union.unionbackend.controllers;
 
+import com.union.unionbackend.dtos.CourseWithLastMessageDto;
 import com.union.unionbackend.dtos.EnrollmentDto;
 import com.union.unionbackend.services.enrollmentService.EnrollmentService;
 import lombok.RequiredArgsConstructor;
@@ -44,5 +45,12 @@ public class EnrollmentController {
   @GetMapping("/student/{studentId}")
   public ResponseEntity<List<EnrollmentDto>> getEnrollmentsByStudent(@PathVariable String studentId) {
     return ResponseEntity.ok(enrollmentService.getEnrollmentsByStudent(studentId));
+  }
+
+  @GetMapping("/courses-with-last-message/{studentId}")
+  public ResponseEntity<List<CourseWithLastMessageDto>> getCoursesWithLastMessage(
+      @PathVariable String studentId) {
+    List<CourseWithLastMessageDto> courses = enrollmentService.getEnrolledCoursesWithLastMessage(studentId);
+    return ResponseEntity.ok(courses);
   }
 }

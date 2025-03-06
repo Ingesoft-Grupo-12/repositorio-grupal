@@ -6,11 +6,14 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-/**
- * Repository interface for Message entities. Provides CRUD operations for Message entities.
- */
+import java.util.Optional;
+
 @Repository
 public interface MessageRepository extends JpaRepository<Message, Long> {
 
   Page<Message> findByCourseId(Long courseId, Pageable pageable);
+
+  // Obtiene el último mensaje de un curso
+  Optional<Message> findTopByCourseIdOrderBySentAtDesc(Long courseId);
 }
+

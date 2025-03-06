@@ -1,13 +1,17 @@
 package com.union.unionbackend.services.enrollmentService;
 
+import com.union.unionbackend.dtos.CourseWithLastMessageDto;
 import com.union.unionbackend.dtos.EnrollmentDto;
 import com.union.unionbackend.mapper.EnrollmentMapper;
 import com.union.unionbackend.models.Course;
 import com.union.unionbackend.models.Enrollment;
+import com.union.unionbackend.models.Message;
 import com.union.unionbackend.models.User;
 import com.union.unionbackend.repositories.CourseRepository;
 import com.union.unionbackend.repositories.EnrollmentRepository;
+import com.union.unionbackend.repositories.MessageRepository;
 import com.union.unionbackend.repositories.UserRepository;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +26,7 @@ public class EnrollmentServiceImpl implements EnrollmentService {
   private final EnrollmentRepository enrollmentRepository;
   private final UserRepository userRepository;
   private final CourseRepository courseRepository;
+  private final MessageRepository messageRepository;
 
   @Override
   public Optional<EnrollmentDto> enrollStudent(Long courseId, String studentId) {
@@ -73,5 +78,32 @@ public class EnrollmentServiceImpl implements EnrollmentService {
   @Override
   public boolean existsByStudentIdAndCourseId(String studentId, Long courseId) {
     return enrollmentRepository.existsByStudent_IdAndCourse_Id(studentId, courseId);
+  }
+
+  @Override
+  public List<CourseWithLastMessageDto> getEnrolledCoursesWithLastMessage(String studentId) {
+    // 1️⃣ Obtener inscripciones del estudiante
+    List<Enrollment> enrollments = enrollmentRepository.findByStudent_Id(studentId);
+
+    // 2️⃣ Mapear los cursos con su último mensaje
+    return enrollments.stream()
+        .map(enrollment -> {
+          Course course = enrollment.getCourse();
+
+          // Buscar el último mensaje del curso
+          Message lastMessage = messageRepository
+              .findTopByCourseIdOrderBySentAtDesc(course.getId())
+              .orElse(null);
+
+          return new CourseWithLastMessageDto(
+              course.getId(),
+              course.getCode(),
+              course.getName(),
+              course.getDescription(),
+              lastMessage != null ? lastMessage.getContent() : "No messages yet",
+              lastMessage != null ? lastMessage.getSentAt() : null
+          );
+        })
+        .collect(Collectors.toList());
   }
 }
