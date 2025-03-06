@@ -61,4 +61,6 @@ public interface EnrollmentService {
   boolean existsByStudentIdAndCourseId(String studentId, Long courseId);
 
   List<CourseWithLastMessageDto> getEnrolledCoursesWithLastMessage(String studentId);
+
+  void deleteByCourseId(Long courseId);
 }

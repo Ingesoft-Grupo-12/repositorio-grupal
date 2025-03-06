@@ -34,15 +34,17 @@ public class CourseServiceImp implements CourseService {
       return courseRepository.save(course);
     });
   }
-
   @Override
   public boolean deleteCourse(Long id) {
     if (courseRepository.existsById(id)) {
+      enrollmentService.deleteByCourseId(id);
+
       courseRepository.deleteById(id);
       return true;
     }
     return false;
   }
+
 
   @Override
   public Optional<CourseDto> getCourse(Long id) {

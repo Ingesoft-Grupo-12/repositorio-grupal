@@ -108,4 +108,13 @@ public class EnrollmentServiceImpl implements EnrollmentService {
         .collect(Collectors.toList());
   }
 
+  @Override
+  public void deleteByCourseId(Long courseId) {
+    List<Enrollment> enrollments = enrollmentRepository.findByCourse_Id(courseId);
+
+    if (!enrollments.isEmpty()) {
+      enrollmentRepository.deleteAll(enrollments);
+    }
+  }
+
 }
