@@ -38,32 +38,32 @@ public class CourseChatController {
   private final MessageService messageService;
 
   @MessageMapping("/chat/{courseId}/send")
-//  public void handleChatMessage(
-//      @DestinationVariable Long courseId,
-//      @Payload MessageRequest messageRequest
-//  ) {
-//    // Obtener usuario autenticado desde el token JWT
-//    User sender = userService.getUserById(messageRequest.getSenderId());
-//
-//    // Validar acceso al curso (profesor o estudiante inscrito)
-//    Course course = courseService.validateCourseMembership(sender.getId(), courseId);
-//
-//    // Construir y guardar mensaje
-//    Message message = Message.builder()
-//        .content(messageRequest.getContent())
-//        .sender(sender)
-//        .course(course)
-//        .sentAt(LocalDateTime.now())
-//        .build();
-//
-//    messageRepository.save(message);
-//
-//    // Enviar mensaje a los suscriptores del curso
-//    messagingTemplate.convertAndSend(
-//        "/topic/courses/" + courseId + "/chat",
-//        new MessageDto(sender.getName(), message.getContent(), Instant.now())
-//    );
-//  }
+  public void handleChatMessage(
+      @DestinationVariable Long courseId,
+      @Payload MessageRequest messageRequest
+  ) {
+    // Obtener usuario autenticado desde el token JWT
+    User sender = userService.getUserById(messageRequest.getSenderId());
+
+    // Validar acceso al curso (profesor o estudiante inscrito)
+    Course course = courseService.validateCourseMembership(sender.getId(), courseId);
+
+    // Construir y guardar mensaje
+    Message message = Message.builder()
+        .content(messageRequest.getContent())
+        .sender(sender)
+        .course(course)
+        .sentAt(LocalDateTime.now())
+        .build();
+
+    messageRepository.save(message);
+
+    // Enviar mensaje a los suscriptores del curso
+    messagingTemplate.convertAndSend(
+        "/topic/courses/" + courseId + "/chat",
+        new MessageDto(sender.getUsername(), message.getContent(), LocalDateTime.now())
+    );
+  }
 
   @PostMapping("/course/{courseId}/user/{userId}")
   public ResponseEntity<MessageDto> createMessage(@RequestBody MessageDto messageDto, @PathVariable Long courseId, @PathVariable Long userId) {
