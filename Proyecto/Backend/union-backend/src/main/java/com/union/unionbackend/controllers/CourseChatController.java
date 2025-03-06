@@ -56,12 +56,20 @@ public class CourseChatController {
         .sentAt(LocalDateTime.now())
         .build();
 
-    messageRepository.save(message);
+    message = messageRepository.save(message); // 🔹 Guardar mensaje en la BD y obtener el ID
 
-    // Enviar mensaje a los suscriptores del curso
+    // Enviar mensaje a los suscriptores del curso con toda la información necesaria
     messagingTemplate.convertAndSend(
         "/topic/courses/" + courseId + "/chat",
-        new MessageDto(sender.getUsername(), message.getContent(), LocalDateTime.now())
+        new MessageDto(
+            message.getId(),
+            sender.getId(),       // 🔹 Se envía el ID del remitente
+            sender.getUsername(), // 🔹 Se envía el nombre del remitente
+            sender.getUserimage(), // 🔹 Se envía la imagen del remitente
+            message.getContent(),
+            message.getSentAt(),
+            courseId
+        )
     );
   }
 
