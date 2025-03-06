@@ -60,4 +60,7 @@ public class User {
   @OneToMany(mappedBy = "sender", fetch = FetchType.LAZY)
   @Builder.Default
   private Set<Message> messages = new HashSet<>();
+
+  @Column
+  private String userimage;
 }
