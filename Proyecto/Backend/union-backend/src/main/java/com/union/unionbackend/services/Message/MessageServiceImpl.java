@@ -39,20 +39,20 @@ public class MessageServiceImpl implements MessageService {
         .build();
 
     message = messageRepository.save(message);
-    return new MessageDto(sender.getUsername(), message.getContent(), message.getSentAt());
+    return new MessageDto(message.getId(), message.getSender().getId(), message.getSender().getUsername(), message.getSender().getUserimage(), message.getContent(), message.getSentAt(), message.getCourse().getId());
   }
 
 
   @Override
   public Page<MessageDto> getMessagesByCourse(Long courseId, Pageable pageable) {
     return messageRepository.findByCourseId(courseId, pageable)
-        .map(msg -> new MessageDto(msg.getSender().getUsername(), msg.getContent(), msg.getSentAt()));
+        .map(msg -> new MessageDto(msg.getId(), msg.getSender().getId(), msg.getSender().getUsername(), msg.getSender().getUserimage(), msg.getContent(), msg.getSentAt(), msg.getCourse().getId()));
   }
 
   @Override
   public MessageDto getMessageById(Long id) {
     Message message = messageRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Message not found"));
-    return new MessageDto(message.getSender().getUsername(), message.getContent(), message.getSentAt());
+    return new MessageDto(message.getId(), message.getSender().getId(), message.getSender().getUsername(), message.getSender().getUserimage(), message.getContent(), message.getSentAt(), message.getCourse().getId());
   }
 
   @Override
@@ -61,7 +61,7 @@ public class MessageServiceImpl implements MessageService {
     Message message = messageRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Message not found"));
     message.setContent(messageDto.content());
     message = messageRepository.save(message);
-    return new MessageDto(message.getSender().getUsername(), message.getContent(), message.getSentAt());
+    return new MessageDto(message.getId(), message.getSender().getId(), message.getSender().getUsername(), message.getSender().getUserimage(), message.getContent(), message.getSentAt(), message.getCourse().getId());
   }
 
   @Override
