@@ -1,6 +1,7 @@
 package com.union.unionbackend.services.courseService;
 
 import com.union.unionbackend.dtos.CourseDto;
+import com.union.unionbackend.dtos.UserDto;
 import com.union.unionbackend.models.Course;
 import com.union.unionbackend.repositories.CourseRepository;
 import com.union.unionbackend.services.enrollmentService.EnrollmentService;
@@ -46,24 +47,55 @@ public class CourseServiceImp implements CourseService {
   @Override
   public Optional<CourseDto> getCourse(Long id) {
     return courseRepository.findById(id)
-        .map(course -> new CourseDto(
-            course.getId(),
-            course.getName(),
-            course.getDescription(),
-            course.getTeacher().getId()
-        ));
+        .map(course -> {
+          List<UserDto> participants = course.getEnrollments().stream()
+              .map(enrollment -> new UserDto(
+                  enrollment.getStudent().getId(),
+                  enrollment.getStudent().getUsername(),
+                  enrollment.getStudent().getEmail(),
+                  enrollment.getStudent().getRole().name(), // 🔹 Convertir Enum a String
+                  enrollment.getStudent().getUserimage()
+              ))
+              .toList();
+
+          return new CourseDto(
+              course.getId(),
+              course.getName(),
+              course.getDescription(),
+              course.getTeacher().getId(),
+              participants // 🔹 Se agregan los participantes
+          );
+        });
   }
+
 
   @Override
   public List<CourseDto> getAllCourses() {
     List<Course> courses = courseRepository.findAll();
+
     return courses.stream()
-        .map(course -> new CourseDto(course.getId(),
-            course.getName(),
-            course.getDescription(),
-            course.getTeacher().getId()))
+        .map(course -> {
+          List<UserDto> participants = course.getEnrollments().stream()
+              .map(enrollment -> new UserDto(
+                  enrollment.getStudent().getId(),
+                  enrollment.getStudent().getUsername(),
+                  enrollment.getStudent().getEmail(),
+                  enrollment.getStudent().getRole().toString(),
+                  enrollment.getStudent().getUserimage()
+              ))
+              .toList();
+
+          return new CourseDto(
+              course.getId(),
+              course.getName(),
+              course.getDescription(),
+              course.getTeacher().getId(),
+              participants // 🔹 Se agrega la lista de participantes
+          );
+        })
         .toList();
   }
+
 
 
 

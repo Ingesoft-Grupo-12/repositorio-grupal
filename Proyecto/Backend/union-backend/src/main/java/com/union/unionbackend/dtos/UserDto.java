@@ -1,9 +1,11 @@
 package com.union.unionbackend.dtos;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import jakarta.validation.constraints.NotBlank;
 
 @Data
+@AllArgsConstructor
 public class UserDto {
 
   private String id;
