@@ -16,4 +16,7 @@ public class UserDto {
 
   @NotBlank(message = "Role cannot be blank")
   private String role;
+
+  @NotBlank(message = "Image cannot be blank")
+  private String userimage;
 }
