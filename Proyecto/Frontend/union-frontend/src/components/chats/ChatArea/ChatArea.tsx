@@ -14,6 +14,8 @@ import {
   UserType,
   CourseMessageType,
 } from "@/app/chats/chatsTypings";
+import SockJS from "sockjs-client";
+import { Client } from "@stomp/stompjs";
 
 type ChatAreaProps = {
   selectedModule: ModuleType;
@@ -32,6 +34,71 @@ export default function ChatArea({
   const [courseMessages, setCourseMessages] = useState<CourseMessageType[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [userId, setUserId] = useState<number | null>(null);
+  const [stompClient, setStompClient] = useState<Client | null>(null);
+  const [isConnected, setIsConnected] = useState(false);
+  const [input, setInput] = useState("");
+
+  useEffect(() => {
+    const token = "";
+    const socket = new SockJS("http://localhost:8080/union-backend/ws");
+    const client = new Client({
+      webSocketFactory: () => socket,
+      connectHeaders: {
+        Authorization: `Bearer ${token}`,
+      },
+      debug: (str: string) => console.log(str),
+      reconnectDelay: 5000,
+    });
+
+    client.onConnect = () => {
+      setIsConnected(true);
+      // Suscripción al canal de mensajes del curso
+      client.subscribe(
+        `/topic/courses/${selectedCourse?.courseId}/chat`,
+        (message) => {
+          try {
+            // Se espera que el mensaje sea un JSON con { name, content, timestamp }
+            const parsed = JSON.parse(message.body);
+            setCourseMessages((prev) => [...prev, parsed]);
+          } catch (e) {
+            console.error("Error al parsear el mensaje:", e);
+          }
+        }
+      );
+    };
+
+    client.onStompError = (frame) => {
+      console.error("Error:", frame.headers.message, frame.body);
+    };
+
+    client.activate();
+    setStompClient(client);
+
+    return () => {
+      if (client && client.deactivate) {
+        client.deactivate();
+        setIsConnected(false);
+      }
+    };
+  }, [selectedCourse?.courseId]);
+
+  const sendMessage = () => {
+    if (stompClient && stompClient.connected) {
+      const token = "";
+      const senderId = userId;
+      // Se construye el payload incluyendo el contenido y el id del sender
+      const payload = { content: input, senderId };
+      stompClient.publish({
+        destination: `/app/chat/${selectedCourse?.courseId}/send`,
+        body: JSON.stringify(payload),
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      setInput("");
+    }
+  };
 
   useEffect(() => {
     fetchUserId();
@@ -129,7 +196,7 @@ export default function ChatArea({
           <ChatBody chatMessages={chatMessages} userId={userId} />
         )}
         <div className="mt-auto">
-          <ChatBox />
+          <ChatBox onSendMessage={sendMessage} />
         </div>
       </div>
     );
@@ -147,7 +214,7 @@ export default function ChatArea({
           <CourseBody courseMessages={courseMessages} userId={userId!} />
         )}
         <div className="mt-auto">
-          <ChatBox />
+          <ChatBox onSendMessage={sendMessage} />
         </div>
       </div>
     );

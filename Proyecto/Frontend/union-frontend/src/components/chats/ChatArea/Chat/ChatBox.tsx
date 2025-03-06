@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useEffect, useState, useRef } from "react";
 import { BsSend, BsEmojiSmile } from "react-icons/bs";
 import { GoPaperclip } from "react-icons/go";
 import EmojiPicker from "emoji-picker-react";
@@ -8,7 +8,11 @@ import { EmojiStyle } from "emoji-picker-react";
 import { hiddenEmojis, categories } from "@/data/emojiPickerConfig";
 import ClipMenu from "../ClipMenu";
 
-export default function ChatBox() {
+type ChatBoxProps = {
+  onSendMessage: (message: string) => void;
+};
+
+export default function ChatBox({ onSendMessage }: ChatBoxProps) {
   const [message, setMessage] = useState("");
   const [showPicker, setShowPicker] = useState(false);
   const [showClipMenu, setShowClipMenu] = useState(false);
@@ -51,7 +55,7 @@ export default function ChatBox() {
 
   const handleSendMessage = () => {
     if (message.trim() !== "") {
-      console.log("Mensaje enviado:", message);
+      onSendMessage(message);
       setMessage("");
     }
   };

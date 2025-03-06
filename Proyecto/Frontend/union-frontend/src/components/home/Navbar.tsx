@@ -13,6 +13,38 @@ export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
+  useEffect(() => {
+    if (!user) return;
+
+    const registerUser = async () => {
+      try {
+        const newUser = {
+          id: user.sub,
+          username: user.name,
+          email: user.email,
+          role: "STUDENT",
+        };
+
+        const res = await fetch("/api/users", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(newUser),
+        });
+
+        if (!res.ok) throw new Error("Error al crear el usuario");
+
+        const createdUser = await res.json();
+        console.log("Usuario creado:", createdUser);
+      } catch (error) {
+        console.error("Error:", error);
+      }
+    };
+
+    registerUser();
+  }, [user]);
+
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
